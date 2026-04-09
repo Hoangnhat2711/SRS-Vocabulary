@@ -1,0 +1,1738 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SRS Vocabulary</title>
+    <style>
+        :root {
+            --bg: #f4f7fb;
+            --bg-2: #eef3f9;
+            --panel: rgba(255, 255, 255, 0.88);
+            --panel-strong: rgba(255, 255, 255, 0.96);
+            --line: rgba(15, 23, 42, 0.08);
+            --line-strong: rgba(15, 23, 42, 0.14);
+            --text: #0f172a;
+            --muted: #5f6f86;
+            --muted-2: #7a8aa2;
+            --accent: #2563eb;
+            --accent-soft: rgba(37, 99, 235, 0.10);
+            --accent-soft-2: rgba(37, 99, 235, 0.16);
+            --success: #0f9d6d;
+            --success-soft: rgba(15, 157, 109, 0.12);
+            --warn: #c36b14;
+            --warn-soft: rgba(195, 107, 20, 0.13);
+            --danger: #c24141;
+            --danger-soft: rgba(194, 65, 65, 0.12);
+            --shadow-lg: 0 16px 40px rgba(15, 23, 42, 0.08);
+            --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.06);
+            --shadow-sm: 0 4px 14px rgba(15, 23, 42, 0.05);
+            --radius-xl: 14px;
+            --radius-lg: 12px;
+            --radius-md: 10px;
+            --radius-sm: 8px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            min-height: 100%;
+        }
+
+        body {
+            font-family: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(37, 99, 235, 0.12), transparent 30%),
+                radial-gradient(circle at top right, rgba(15, 157, 109, 0.10), transparent 26%),
+                linear-gradient(180deg, #f7faff 0%, #eef3f9 100%);
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image:
+                linear-gradient(rgba(15, 23, 42, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(15, 23, 42, 0.03) 1px, transparent 1px);
+            background-size: 28px 28px;
+            mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0));
+        }
+
+        .shell {
+            position: relative;
+            z-index: 1;
+            max-width: 1380px;
+            margin: 0 auto;
+            padding: 8px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .topbar,
+        .overview,
+        .workspace {
+            border: 1px solid var(--line);
+            background: var(--panel);
+            backdrop-filter: blur(14px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .topbar {
+            border-radius: var(--radius-xl);
+            padding: 12px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(244, 248, 255, 0.94));
+        }
+
+        .brand-shell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+            flex: 1 1 520px;
+        }
+
+        .brand-mark {
+            width: 42px;
+            height: 42px;
+            padding: 6px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 45%, #0ea5e9 100%);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 10px 24px rgba(37, 99, 235, 0.18);
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 4px;
+            flex: 0 0 auto;
+        }
+
+        .brand-mark span {
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--muted);
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+
+        .brand {
+            display: grid;
+            gap: 4px;
+            max-width: 720px;
+            min-width: 0;
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: clamp(24px, 2.3vw, 30px);
+            line-height: 1.04;
+            letter-spacing: -0.04em;
+        }
+
+        .brand p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.45;
+            max-width: 720px;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            padding: 6px;
+            border-radius: 10px;
+            border: 1px solid rgba(15, 23, 42, 0.06);
+            background: rgba(255, 255, 255, 0.62);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+        }
+
+        .toolbar-actions {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .select-wrap {
+            min-width: 210px;
+            display: grid;
+            gap: 3px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(245, 158, 11, 0.18);
+            background: linear-gradient(180deg, #fff8ef 0%, #ffedd7 100%);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.78);
+        }
+
+        .select-wrap span {
+            font-size: 11px;
+            line-height: 1;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #9a6700;
+        }
+
+        .select-wrap select {
+            width: 100%;
+            border: 0;
+            outline: 0;
+            background: transparent;
+            color: #7c4a03;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .btn {
+            appearance: none;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 13px;
+            line-height: 1;
+            font-weight: 800;
+            cursor: pointer;
+            transition: transform 0.16s ease, box-shadow 0.16s ease, opacity 0.16s ease, background 0.16s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn:disabled {
+            opacity: 0.55;
+            transform: none;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: linear-gradient(180deg, #2f6df6 0%, #1f58d8 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(180deg, #ffffff 0%, #f3f6fb 100%);
+            color: #5b6b82;
+            border-color: rgba(100, 116, 139, 0.16);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.82), 0 4px 12px rgba(100, 116, 139, 0.08);
+        }
+
+        .btn-danger {
+            background: linear-gradient(180deg, #eef4ff 0%, #dee9ff 100%);
+            color: #305caa;
+            border-color: rgba(59, 130, 246, 0.18);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.82), 0 4px 12px rgba(59, 130, 246, 0.10);
+        }
+
+        .btn-ghost {
+            background: linear-gradient(180deg, #f3f7ff 0%, #e8f0ff 100%);
+            color: #49607f;
+            border-color: rgba(96, 128, 182, 0.20);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.78);
+            padding: 8px 10px;
+            font-size: 12px;
+        }
+
+        .btn-up {
+            background: linear-gradient(180deg, #17a777 0%, #0d8f65 100%);
+            color: white;
+        }
+
+        .btn-keep {
+            background: #edf3ff;
+            color: #24457a;
+            border-color: rgba(36, 69, 122, 0.10);
+        }
+
+        .btn-down {
+            background: linear-gradient(180deg, #db7b2e 0%, #bf6216 100%);
+            color: white;
+        }
+
+        .overview {
+            border-radius: var(--radius-xl);
+            padding: 8px 10px;
+            display: grid;
+            gap: 6px;
+        }
+
+        .stats-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .stat-card {
+            flex: 1 1 88px;
+            min-width: 88px;
+            border-radius: 8px;
+            border: 1px solid var(--line);
+            background: var(--panel-strong);
+            box-shadow: none;
+            padding: 8px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .stat-card.level-b1 {
+            background: rgba(37, 99, 235, 0.08);
+            border-color: rgba(37, 99, 235, 0.18);
+        }
+
+        .stat-card.level-b2 {
+            background: rgba(14, 165, 233, 0.08);
+            border-color: rgba(14, 165, 233, 0.18);
+        }
+
+        .stat-card.level-b3 {
+            background: rgba(16, 185, 129, 0.08);
+            border-color: rgba(16, 185, 129, 0.18);
+        }
+
+        .stat-card.level-b4 {
+            background: rgba(168, 85, 247, 0.08);
+            border-color: rgba(168, 85, 247, 0.18);
+        }
+
+        .stat-card.level-b5 {
+            background: rgba(245, 158, 11, 0.10);
+            border-color: rgba(245, 158, 11, 0.20);
+        }
+
+        .stat-card.level-pending {
+            background: rgba(100, 116, 139, 0.08);
+            border-color: rgba(100, 116, 139, 0.18);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            line-height: 1;
+            font-weight: 800;
+            color: var(--muted-2);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .stat-value {
+            font-size: clamp(20px, 1.6vw, 26px);
+            line-height: 1;
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            margin-left: auto;
+        }
+
+        .stat-note {
+            display: none;
+        }
+
+        .progress-strip {
+            border-radius: 8px;
+            border: 1px solid var(--line);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(248, 251, 255, 0.9));
+            padding: 8px 10px;
+            display: grid;
+            gap: 5px;
+        }
+
+        .progress-head,
+        .progress-foot {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .progress-head-right {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .progress-head strong {
+            font-size: 13px;
+            color: var(--text);
+        }
+
+        .progress-head span,
+        .progress-foot {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .track {
+            width: 100%;
+            height: 8px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.08);
+            overflow: hidden;
+            border: 1px solid rgba(15, 23, 42, 0.05);
+        }
+
+        .fill {
+            width: 0;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #3b82f6 0%, #22c55e 100%);
+            transition: width 0.24s ease;
+        }
+
+        .workspace {
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        .drawer {
+            display: none;
+            border-top: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.92);
+            padding: 10px;
+        }
+
+        .drawer.show {
+            display: grid;
+            gap: 8px;
+        }
+
+        .drawer-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .drawer-head h3 {
+            margin: 0;
+            font-size: 16px;
+            line-height: 1.2;
+        }
+
+        .drawer-head p {
+            margin: 0;
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.4;
+        }
+
+        .drawer-summary {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .mini-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 8px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: rgba(248, 251, 255, 0.92);
+            font-size: 11px;
+            color: var(--muted);
+            font-weight: 700;
+        }
+
+        .table-wrap {
+            overflow: auto;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            background: white;
+            max-height: 420px;
+        }
+
+        .vocab-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 940px;
+            font-size: 13px;
+        }
+
+        .vocab-table thead th {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            background: #f8fbff;
+            color: var(--muted-2);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 10px 10px;
+            border-bottom: 1px solid var(--line);
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        .vocab-table tbody td {
+            padding: 10px 10px;
+            border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+            vertical-align: top;
+            color: var(--text);
+        }
+
+        .vocab-table tbody tr:hover {
+            background: rgba(37, 99, 235, 0.03);
+        }
+
+        .table-word {
+            font-weight: 800;
+            color: #13264d;
+        }
+
+        .table-sub {
+            margin-top: 4px;
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.35;
+        }
+
+        .status-pill,
+        .level-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 62px;
+            padding: 5px 8px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 800;
+            border: 1px solid transparent;
+            white-space: nowrap;
+        }
+
+        .status-open {
+            background: rgba(16, 185, 129, 0.10);
+            color: #0f8f65;
+            border-color: rgba(16, 185, 129, 0.18);
+        }
+
+        .status-pending {
+            background: rgba(100, 116, 139, 0.10);
+            color: #556274;
+            border-color: rgba(100, 116, 139, 0.16);
+        }
+
+        .level-none {
+            background: rgba(100, 116, 139, 0.10);
+            color: #556274;
+            border-color: rgba(100, 116, 139, 0.16);
+        }
+
+        .level-1 {
+            background: rgba(37, 99, 235, 0.10);
+            color: #1c56c9;
+            border-color: rgba(37, 99, 235, 0.18);
+        }
+
+        .level-2 {
+            background: rgba(14, 165, 233, 0.10);
+            color: #0a83ba;
+            border-color: rgba(14, 165, 233, 0.18);
+        }
+
+        .level-3 {
+            background: rgba(16, 185, 129, 0.10);
+            color: #11875f;
+            border-color: rgba(16, 185, 129, 0.18);
+        }
+
+        .level-4 {
+            background: rgba(168, 85, 247, 0.10);
+            color: #8b46cf;
+            border-color: rgba(168, 85, 247, 0.18);
+        }
+
+        .level-5 {
+            background: rgba(245, 158, 11, 0.12);
+            color: #b96f00;
+            border-color: rgba(245, 158, 11, 0.20);
+        }
+
+        .study-view {
+            display: grid;
+            grid-template-columns: minmax(0, 1.6fr) minmax(300px, 0.78fr);
+            gap: 8px;
+            padding: 8px;
+            min-height: 0;
+        }
+
+        .focus-panel,
+        .support-panel {
+            min-height: 0;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-lg);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 251, 255, 0.94));
+            box-shadow: none;
+            overflow: hidden;
+        }
+
+        .focus-panel {
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+        }
+
+        .focus-top {
+            padding: 10px 10px 0;
+            display: grid;
+            gap: 6px;
+        }
+
+        .meta-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: 1px solid transparent;
+            font-size: 11px;
+            line-height: 1;
+            font-weight: 800;
+            color: #194172;
+            background: #edf4ff;
+        }
+
+        .badge.accent {
+            background: var(--accent-soft);
+            color: #1948a8;
+            border-color: rgba(37, 99, 235, 0.10);
+        }
+
+        .badge.warn {
+            background: var(--warn-soft);
+            color: #8b4a0d;
+            border-color: rgba(195, 107, 20, 0.10);
+        }
+
+        .badge.success {
+            background: var(--success-soft);
+            color: #0e7f59;
+            border-color: rgba(15, 157, 109, 0.10);
+        }
+
+        .focus-body {
+            min-height: 0;
+            padding: 10px;
+            display: grid;
+            gap: 8px;
+            align-content: start;
+        }
+
+        .hero-card {
+            border-radius: 10px;
+            border: 1px solid var(--line);
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(245, 249, 255, 0.96)),
+                linear-gradient(135deg, rgba(37, 99, 235, 0.06), rgba(15, 157, 109, 0.04));
+            padding: 10px;
+            display: grid;
+            gap: 6px;
+        }
+
+        .hero-kicker {
+            font-size: 12px;
+            line-height: 1;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted-2);
+        }
+
+        .hero-card h2 {
+            margin: 0;
+            font-size: clamp(22px, 2.1vw, 30px);
+            line-height: 1.08;
+            letter-spacing: -0.04em;
+            word-break: break-word;
+        }
+
+        .hero-card p {
+            margin: 0;
+            font-size: 13px;
+            line-height: 1.55;
+            color: var(--muted);
+        }
+
+        .prompt-panel {
+            border-radius: 8px;
+            border: 1px solid rgba(37, 99, 235, 0.14);
+            background: linear-gradient(180deg, rgba(37, 99, 235, 0.08), rgba(255, 255, 255, 0.94));
+            padding: 9px 11px;
+            font-size: clamp(17px, 1.7vw, 21px);
+            line-height: 1.38;
+            font-weight: 800;
+            color: #173a74;
+            word-break: break-word;
+        }
+
+        .answer-area {
+            display: grid;
+            gap: 8px;
+        }
+
+        .answer-row {
+            display: flex;
+            gap: 8px;
+            align-items: stretch;
+            flex-wrap: wrap;
+        }
+
+        input[type="text"] {
+            flex: 1 1 300px;
+            min-width: 0;
+            border-radius: 8px;
+            border: 1px solid var(--line-strong);
+            background: white;
+            padding: 14px 16px;
+            font-size: 16px;
+            line-height: 1.3;
+            color: var(--text);
+            outline: none;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+            transition: border-color 0.16s ease, box-shadow 0.16s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: rgba(37, 99, 235, 0.48);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.10);
+        }
+
+        .assist-text {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.45;
+        }
+
+        .choice-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .choice-card {
+            display: grid;
+            gap: 6px;
+            align-content: center;
+            min-height: 78px;
+            text-align: left;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--line);
+            box-shadow: none;
+        }
+
+        .choice-card strong {
+            font-size: 15px;
+            line-height: 1.2;
+        }
+
+        .choice-card span {
+            font-size: 12px;
+            line-height: 1.4;
+            opacity: 0.92;
+        }
+
+        .inline-result {
+            display: none;
+            border-top: 1px solid var(--line);
+            background: rgba(248, 251, 255, 0.92);
+            padding: 10px 12px;
+        }
+
+        .inline-result.show {
+            display: grid;
+            gap: 10px;
+        }
+
+        .inline-result.correct {
+            background: linear-gradient(180deg, rgba(15, 157, 109, 0.09), rgba(255, 255, 255, 0.96));
+        }
+
+        .inline-result.wrong {
+            background: linear-gradient(180deg, rgba(194, 65, 65, 0.09), rgba(255, 255, 255, 0.96));
+        }
+
+        .inline-result.neutral {
+            background: linear-gradient(180deg, rgba(37, 99, 235, 0.08), rgba(255, 255, 255, 0.96));
+        }
+
+        .result-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .result-title {
+            display: grid;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .result-title h3 {
+            margin: 0;
+            font-size: 20px;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+        }
+
+        .result-title p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .result-item {
+            border-radius: 10px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px 12px;
+            display: grid;
+            gap: 5px;
+        }
+
+        .result-item label {
+            font-size: 11px;
+            line-height: 1;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted-2);
+        }
+
+        .result-item div {
+            font-size: 15px;
+            line-height: 1.55;
+            color: var(--text);
+            word-break: break-word;
+        }
+
+        .support-panel {
+            padding: 8px 10px;
+            display: grid;
+            gap: 6px;
+            align-content: start;
+            align-self: start;
+            max-height: calc(100vh - 120px);
+            overflow: auto;
+        }
+
+        .support-section {
+            padding: 0;
+            display: grid;
+            gap: 8px;
+            box-shadow: none;
+        }
+
+        .support-section+.support-section {
+            margin-top: 0;
+            padding-top: 6px;
+            border-top: 1px solid var(--line);
+        }
+
+        .support-section h3 {
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+
+        .support-section p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 6px;
+        }
+
+        .detail-item {
+            border-radius: 6px;
+            border: 1px solid var(--line);
+            background: rgba(248, 251, 255, 0.88);
+            padding: 8px 9px;
+            display: grid;
+            gap: 4px;
+            min-height: 0;
+        }
+
+        .detail-item.wide {
+            grid-column: 1 / -1;
+            min-height: auto;
+        }
+
+        .detail-label {
+            font-size: 11px;
+            line-height: 1;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted-2);
+        }
+
+        .detail-value {
+            font-size: 12px;
+            line-height: 1.4;
+            color: var(--text);
+            word-break: break-word;
+        }
+
+        .examples-list {
+            display: grid;
+            gap: 6px;
+            max-height: 150px;
+            overflow: auto;
+            padding-right: 2px;
+        }
+
+        .example-item {
+            border-radius: 6px;
+            border: 1px solid var(--line);
+            background: rgba(248, 251, 255, 0.88);
+            padding: 8px 10px;
+            font-size: 12px;
+            line-height: 1.45;
+            color: var(--text);
+        }
+
+        .empty-state {
+            min-height: 520px;
+            display: grid;
+            place-items: center;
+            padding: 20px;
+        }
+
+        .empty-card {
+            width: min(100%, 720px);
+            border-radius: 12px;
+            border: 1px dashed var(--line-strong);
+            background: rgba(255, 255, 255, 0.82);
+            padding: 32px;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            display: grid;
+            gap: 12px;
+        }
+
+        .empty-card h2 {
+            margin: 0;
+            font-size: 28px;
+            line-height: 1.12;
+            letter-spacing: -0.03em;
+        }
+
+        .empty-card p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .footnote {
+            font-size: 13px;
+            line-height: 1.7;
+            color: var(--muted);
+        }
+
+        @media (max-width: 860px) {
+            .stats-grid {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+
+            .study-view {
+                grid-template-columns: 1fr;
+            }
+
+            .support-panel {
+                max-height: none;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .shell {
+                padding: 10px;
+            }
+
+            .topbar,
+            .overview,
+            .workspace {
+                border-radius: 12px;
+            }
+
+            .stats-grid,
+            .detail-grid,
+            .result-grid,
+            .choice-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .answer-row {
+                flex-direction: column;
+            }
+
+            .select-wrap {
+                min-width: 100%;
+            }
+
+            .stats-grid {
+                display: grid;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="shell">
+        <header class="topbar">
+            <div class="brand-shell">
+                <div class="brand-mark" aria-hidden="true">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <div class="brand">
+                    <h1>SRS Vocabulary</h1>
+                    <p>Không gian học từ vựng lặp lại ngắt quãng, tối ưu cho ôn tập hằng ngày và theo dõi tiến độ rõ
+                        ràng.</p>
+                </div>
+            </div>
+
+            <div class="toolbar">
+                <label class="select-wrap">
+                    <span>Bộ từ vựng</span>
+                    <select id="vocabSetSelect"></select>
+                </label>
+                <div class="toolbar-actions">
+                    <button class="btn btn-danger" id="resetBtn">Reset tiến độ</button>
+                </div>
+            </div>
+        </header>
+
+        <section class="overview">
+            <div class="stats-grid" id="statsGrid"></div>
+
+            <div class="progress-strip">
+                <div class="progress-head">
+                    <strong id="progressLine">Đang tải tiến độ...</strong>
+                    <div class="progress-head-right">
+                        <span id="sessionMeta"></span>
+                        <button class="btn btn-ghost" id="toggleProgressBtn">Theo dõi từ vựng</button>
+                    </div>
+                </div>
+
+                <div class="track">
+                    <div class="fill" id="progressFill"></div>
+                </div>
+
+                <div class="progress-foot" id="progressFoot">Đang đồng bộ dữ liệu phiên học...</div>
+            </div>
+        </section>
+
+        <section class="workspace drawer" id="vocabProgressDrawer"></section>
+
+        <section class="workspace">
+            <div id="studyArea"></div>
+        </section>
+    </div>
+
+    <script>
+        const API_BASE = window.location.protocol === "file:" ? "http://127.0.0.1:8000" : "";
+
+        const state = {
+            currentCard: null,
+            latestProgress: null,
+            totalWords: null,
+            turn: 0,
+            nextTimer: null,
+            isSubmitting: false,
+            keyboardChoiceEnabled: false,
+            selectedVocab: null,
+            vocabSets: [],
+            vocabProgressOpen: false,
+            vocabProgressData: null,
+        };
+
+        function escapeHtml(value) {
+            return String(value ?? "")
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#39;");
+        }
+
+        function clearNextTimer() {
+            if (state.nextTimer) {
+                window.clearTimeout(state.nextTimer);
+                state.nextTimer = null;
+            }
+        }
+
+        async function apiFetch(path, options = {}) {
+            const response = await fetch(`${API_BASE}${path}`, options);
+            const text = await response.text();
+            let data = {};
+
+            if (text) {
+                try {
+                    data = JSON.parse(text);
+                } catch {
+                    throw new Error(text.slice(0, 200) || `API trả về dữ liệu không hợp lệ (${response.status})`);
+                }
+            }
+
+            if (!response.ok) {
+                throw new Error(data.detail || `Lỗi API ${response.status}`);
+            }
+
+            return data;
+        }
+
+        function renderVocabPicker() {
+            const select = document.getElementById("vocabSetSelect");
+            if (!select) return;
+            const previous = select.value;
+            select.innerHTML = state.vocabSets.map((name) => `
+        <option value="${escapeHtml(name)}">${escapeHtml(name)}</option>
+      `).join("");
+            select.value = state.selectedVocab || previous || state.vocabSets[0] || "";
+        }
+
+        async function refreshVocabSets() {
+            const data = await apiFetch("/api/vocab-sets");
+            state.selectedVocab = data.selected;
+            state.vocabSets = data.sets || [];
+            renderVocabPicker();
+        }
+
+        function renderVocabProgressDrawer() {
+            const drawer = document.getElementById("vocabProgressDrawer");
+            if (!drawer) return;
+
+            if (!state.vocabProgressOpen) {
+                drawer.className = "workspace drawer";
+                drawer.innerHTML = "";
+                return;
+            }
+
+            const data = state.vocabProgressData;
+            if (!data) {
+                drawer.className = "workspace drawer show";
+                drawer.innerHTML = `
+                  <div class="drawer-head">
+                    <div>
+                      <h3>Đang tải bảng theo dõi từ vựng...</h3>
+                      <p>Hệ thống đang lấy dữ liệu tiến độ chi tiết của từng từ.</p>
+                    </div>
+                  </div>
+                `;
+                return;
+            }
+
+            const summary = data.summary || {};
+            const rows = (data.items || []).map((item) => {
+                const levelClass = item.opened ? `level-${item.level}` : "level-none";
+                const statusClass = item.opened ? "status-open" : "status-pending";
+                return `
+                  <tr>
+                    <td>${escapeHtml(item.index)}</td>
+                    <td>
+                      <div class="table-word">${escapeHtml(item.word)}</div>
+                      <div class="table-sub">${escapeHtml(item.pos || "")}</div>
+                    </td>
+                    <td>${escapeHtml(item.meaning_vi || "")}</td>
+                    <td><span class="status-pill ${statusClass}">${escapeHtml(item.status_label)}</span></td>
+                    <td><span class="level-pill ${levelClass}">${escapeHtml(item.level_label)}</span></td>
+                    <td>${escapeHtml(item.times_seen ?? 0)}</td>
+                    <td>${escapeHtml(item.last_seen_turn ?? "—")}</td>
+                    <td>${escapeHtml(item.last_mode_label || "—")}</td>
+                    <td>${escapeHtml(item.notes || "")}</td>
+                  </tr>
+                `;
+            }).join("");
+
+            drawer.className = "workspace drawer show";
+            drawer.innerHTML = `
+              <div class="drawer-head">
+                <div>
+                  <h3>Theo dõi từ vựng · ${escapeHtml(data.selected_vocab || "")}</h3>
+                  <p>Bảng đầy đủ để xem từng từ đã mở hay chưa, đang ở bậc nào và đã xuất hiện bao nhiêu lần.</p>
+                </div>
+                <div class="drawer-summary">
+                  <span class="mini-chip">B1 ${escapeHtml(summary.b1 ?? 0)}</span>
+                  <span class="mini-chip">B2 ${escapeHtml(summary.b2 ?? 0)}</span>
+                  <span class="mini-chip">B3 ${escapeHtml(summary.b3 ?? 0)}</span>
+                  <span class="mini-chip">B4 ${escapeHtml(summary.b4 ?? 0)}</span>
+                  <span class="mini-chip">B5 ${escapeHtml(summary.b5 ?? 0)}</span>
+                  <span class="mini-chip">Chưa mở ${escapeHtml(summary.pending ?? 0)}</span>
+                </div>
+              </div>
+
+              <div class="table-wrap">
+                <table class="vocab-table">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Từ</th>
+                      <th>Nghĩa Việt</th>
+                      <th>Trạng thái</th>
+                      <th>Bậc</th>
+                      <th>Số lần hỏi</th>
+                      <th>Lượt gần nhất</th>
+                      <th>Chế độ gần nhất</th>
+                      <th>Ghi chú</th>
+                    </tr>
+                  </thead>
+                  <tbody>${rows}</tbody>
+                </table>
+              </div>
+            `;
+        }
+
+        async function loadVocabProgress(force = false) {
+            if (!force && state.vocabProgressData) {
+                renderVocabProgressDrawer();
+                return;
+            }
+            const data = await apiFetch("/api/vocab-progress");
+            state.vocabProgressData = data;
+            renderVocabProgressDrawer();
+        }
+
+        async function toggleVocabProgressDrawer() {
+            state.vocabProgressOpen = !state.vocabProgressOpen;
+            if (state.vocabProgressOpen) {
+                renderVocabProgressDrawer();
+                try {
+                    await loadVocabProgress(true);
+                } catch (error) {
+                    state.vocabProgressData = null;
+                    renderVocabProgressDrawer();
+                    alert(error.message || "Không tải được bảng theo dõi từ vựng.");
+                }
+                return;
+            }
+            renderVocabProgressDrawer();
+        }
+
+        function renderProgress(progress, turn = null, totalWords = null) {
+            if (!progress) return;
+
+            state.latestProgress = progress;
+            if (typeof totalWords === "number") state.totalWords = totalWords;
+            if (typeof turn === "number") state.turn = turn;
+
+            const total = state.totalWords || 0;
+            const opened = total ? total - progress.pending : 0;
+            const mastered = progress.b5 || 0;
+            const focusCount = (progress.b1 || 0) + (progress.b2 || 0);
+            const fillPercent = total ? Math.max(0, Math.min(100, Math.round((opened / total) * 100))) : 0;
+
+            const stats = [
+                ["B1", progress.b1, "level-b1"],
+                ["B2", progress.b2, "level-b2"],
+                ["B3", progress.b3, "level-b3"],
+                ["B4", progress.b4, "level-b4"],
+                ["B5", progress.b5, "level-b5"],
+                ["Chưa mở", progress.pending, "level-pending"],
+            ];
+
+            document.getElementById("statsGrid").innerHTML = stats.map(([label, value, className]) => `
+        <div class="stat-card ${className}">
+          <div class="stat-label">${escapeHtml(label)}</div>
+          <div class="stat-value">${escapeHtml(value)}</div>
+        </div>
+      `).join("");
+
+            document.getElementById("progressLine").textContent = progress.line;
+            document.getElementById("sessionMeta").textContent = total
+                ? `Tổng lượt đã học ${state.turn} · Tổng số từ ${total}`
+                : "";
+            document.getElementById("progressFill").style.width = `${fillPercent}%`;
+            document.getElementById("progressFoot").textContent = total
+                ? `Đã mở ${opened}/${total} từ · B5 ${mastered}/${total} · Trọng tâm hiện tại B1+B2 = ${focusCount}`
+                : "Đang chờ đủ dữ liệu để tính tiến độ tổng.";
+        }
+
+        function hideResult() {
+            clearNextTimer();
+            const box = document.getElementById("inlineResultBox");
+            if (!box) return;
+            box.className = "inline-result";
+            box.innerHTML = "";
+        }
+
+        function setAnswerControlsDisabled(disabled) {
+            document.querySelectorAll("#answerInput, #submitAnswerBtn, [data-choice]").forEach((element) => {
+                element.disabled = disabled;
+            });
+        }
+
+        function showEmpty(message) {
+            document.getElementById("studyArea").innerHTML = `
+        <div class="empty-state">
+          <div class="empty-card">
+            <h2>Phiên học hiện chưa có thẻ</h2>
+            <p>${escapeHtml(message)}</p>
+            <div class="footnote">Tải lại dữ liệu, đổi bộ từ vựng hoặc reset nếu bạn muốn bắt đầu lại.</div>
+          </div>
+        </div>
+      `;
+            hideResult();
+        }
+
+        function detailItem(label, value, wide = false) {
+            if (!value) return "";
+            return `
+        <div class="detail-item ${wide ? "wide" : ""}">
+          <span class="detail-label">${escapeHtml(label)}</span>
+          <div class="detail-value">${escapeHtml(value)}</div>
+        </div>
+      `;
+        }
+
+        function buildSupportPanel(card, revealAll = false) {
+            const showFull = revealAll || card.mode === "intro";
+            const lexicalItems = [
+                showFull ? detailItem("Nghĩa Anh", card.meaning_en) : "",
+                detailItem("Từ loại", card.pos),
+                detailItem("Phiên âm", card.phonetic),
+                detailItem("Ghi chú", card.notes, true),
+            ].filter(Boolean).join("");
+
+            const examples = (card.examples || []).map((item, index) => `
+        <div class="example-item">
+          <span class="detail-label">Ví dụ ${index + 1}</span>
+          <div>${escapeHtml(item)}</div>
+        </div>
+      `).join("");
+
+            let shortcutText = "Space / Enter / → / ↑ để qua câu tiếp theo sau khi hiện kết quả.";
+            if (card.mode === "intro" || card.mode === "vi_to_en") {
+                shortcutText = "Nhấn Enter trong ô nhập để gửi đáp án. Sau khi có kết quả, dùng Space / Enter / → / ↑ để sang câu kế tiếp.";
+            } else if (card.mode === "en_to_vi") {
+                shortcutText = "← hoặc ↓ để xuống bậc · Enter để giữ nguyên · → hoặc ↑ để lên bậc. Khi kết quả hiện ra, dùng Space / Enter / → / ↑ để qua câu tiếp theo.";
+            }
+
+            return `
+        <aside class="support-panel">
+          <section class="support-section">
+            <h3>Thông tin nhanh</h3>
+            <div class="detail-grid">
+              ${lexicalItems || `<div class="detail-item wide"><span class="detail-label">Ẩn đáp án</span><div class="detail-value">Từ đúng và nghĩa sẽ hiện đầy đủ sau khi bạn trả lời hoặc ở lượt làm quen từ mới.</div></div>`}
+            </div>
+          </section>
+
+          <section class="support-section">
+            <h3>Ví dụ & phím tắt</h3>
+            <div class="examples-list">
+              ${examples || `<div class="example-item">Không có ví dụ bổ sung cho thẻ này.</div>`}
+            </div>
+            <div class="detail-item wide">
+              <span class="detail-label">Phím tắt</span>
+              <div class="detail-value">${escapeHtml(shortcutText)}</div>
+            </div>
+          </section>
+        </aside>
+      `;
+        }
+
+        function renderCard(card) {
+            state.currentCard = card;
+            hideResult();
+            renderProgress(card.progress, state.turn, state.totalWords);
+
+            let heroKicker = "Gợi ý tiếng Việt";
+            let heroTitle = "Nhớ từ tiếng Anh rồi nhập đáp án";
+            let heroDescription = "Tự nhớ đáp án rồi trả lời thật dứt khoát để hệ thống cập nhật bậc chính xác hơn.";
+            let promptText = card.prompt_vi || card.word || "";
+            let answerBlock = "";
+
+            if (card.mode === "intro") {
+                heroKicker = "Làm quen từ mới";
+                heroTitle = "Nhìn từ mới rồi gõ lại một lần";
+                heroDescription = "Đây là lượt đầu tiên. Bạn được nhìn từ và nghĩa trước rồi nhập lại chính tả để bắt đầu tạo dấu nhớ.";
+                promptText = `${card.word} = ${card.meaning_vi || ""}`;
+                answerBlock = `
+          <div class="answer-area">
+            <div class="answer-row">
+              <input id="answerInput" type="text" placeholder="Nhập lại từ tiếng Anh" autocomplete="off" />
+              <button class="btn btn-primary" id="submitAnswerBtn">Xác nhận</button>
+            </div>
+            <div class="assist-text">
+              <span>Hãy nhìn từ, nghĩa và ví dụ ở khung bên phải rồi gõ lại thật chuẩn.</span>
+              <span>Phím Enter để gửi đáp án.</span>
+            </div>
+          </div>
+        `;
+            } else if (card.mode === "vi_to_en") {
+                answerBlock = `
+          <div class="answer-area">
+            <div class="answer-row">
+              <input id="answerInput" type="text" placeholder="Nhập từ tiếng Anh" autocomplete="off" />
+              <button class="btn btn-primary" id="submitAnswerBtn">Kiểm tra</button>
+            </div>
+            <div class="assist-text">
+              <span>Ưu tiên nhớ chủ động: nhìn nghĩa Việt và tự kéo từ tiếng Anh ra khỏi trí nhớ.</span>
+              <span>Phím Enter để gửi đáp án.</span>
+            </div>
+          </div>
+        `;
+            } else {
+                heroKicker = "Kiểm tra Anh → Việt";
+                heroTitle = "Tự nhớ nghĩa rồi tự đánh giá mức độ nhớ";
+                heroDescription = "Tự nhớ nghĩa tiếng Việt trước, sau đó tự đánh giá mức độ nhớ để cập nhật bậc phù hợp.";
+                promptText = card.word;
+                answerBlock = `
+          <div class="answer-area">
+            <div class="choice-grid">
+              <button class="btn btn-down choice-card" data-choice="down">
+                <strong>Xuống 1 bậc</strong>
+                <span>← hoặc ↓ · Chưa nhớ hoặc nhớ sai.</span>
+              </button>
+              <button class="btn btn-keep choice-card" data-choice="keep">
+                <strong>Giữ nguyên</strong>
+                <span>Enter · Nhớ mơ hồ, chưa đủ chắc.</span>
+              </button>
+              <button class="btn btn-up choice-card" data-choice="up">
+                <strong>Lên 1 bậc</strong>
+                <span>→ hoặc ↑ · Nhớ chắc và phản xạ tốt.</span>
+              </button>
+            </div>
+            <div class="assist-text">
+              <span>Hướng hỏi này dùng để tự kiểm tra nghĩa và tự đánh giá độ chắc của trí nhớ.</span>
+              <span>Dùng phím mũi tên hoặc Enter để thao tác nhanh.</span>
+            </div>
+          </div>
+        `;
+            }
+
+            document.getElementById("studyArea").innerHTML = `
+        <div class="study-view">
+          <section class="focus-panel">
+            <div class="focus-top">
+              <div class="meta-row">
+                <span class="badge accent">${escapeHtml(card.mode_label)}</span>
+                <span class="badge">Bậc ${escapeHtml(card.level)}</span>
+                <span class="badge warn">Lần ${escapeHtml(card.appearance)}</span>
+                <span class="badge success">Lượt ${escapeHtml(card.upcoming_turn)}</span>
+              </div>
+            </div>
+
+            <div class="focus-body">
+              <div class="hero-card">
+                <div class="hero-kicker">${escapeHtml(heroKicker)}</div>
+                <h2>${escapeHtml(heroTitle)}</h2>
+                <p>${escapeHtml(heroDescription)}</p>
+                <div class="prompt-panel">${escapeHtml(promptText)}</div>
+              </div>
+
+              ${answerBlock}
+            </div>
+
+            <div class="inline-result" id="inlineResultBox"></div>
+          </section>
+
+          ${buildSupportPanel(card)}
+        </div>
+      `;
+
+            const input = document.getElementById("answerInput");
+            if (input) {
+                input.focus();
+                input.addEventListener("keydown", (event) => {
+                    if (event.key === "Enter") submitTextAnswer();
+                });
+            }
+
+            const submitBtn = document.getElementById("submitAnswerBtn");
+            if (submitBtn) submitBtn.addEventListener("click", submitTextAnswer);
+
+            document.querySelectorAll("[data-choice]").forEach((button) => {
+                button.addEventListener("click", () => submitChoice(button.dataset.choice));
+            });
+
+            state.keyboardChoiceEnabled = card.mode === "en_to_vi";
+            setAnswerControlsDisabled(false);
+        }
+
+        async function loadCard() {
+            clearNextTimer();
+            state.isSubmitting = false;
+
+            const data = await apiFetch("/api/card");
+            state.turn = data.session.turn;
+            state.totalWords = data.session.total_words;
+            state.selectedVocab = data.session.selected_vocab || state.selectedVocab;
+            renderVocabPicker();
+            if (state.vocabProgressOpen) {
+                loadVocabProgress(true).catch(() => { });
+            }
+
+            if (data.done) {
+                state.keyboardChoiceEnabled = false;
+                renderProgress(data.session.progress, data.session.turn, data.session.total_words);
+                showEmpty(data.message || "Hiện tại chưa có thẻ nào để học.");
+                return;
+            }
+
+            renderCard(data.card);
+        }
+
+        async function submitTextAnswer() {
+            const input = document.getElementById("answerInput");
+            if (!input || !state.currentCard || state.isSubmitting) return;
+            await submitAnswer({ token: state.currentCard.token, answer: input.value });
+        }
+
+        async function submitChoice(choice) {
+            if (!state.currentCard || state.isSubmitting) return;
+            await submitAnswer({ token: state.currentCard.token, choice });
+        }
+
+        async function submitAnswer(payload) {
+            if (state.isSubmitting) return;
+
+            state.isSubmitting = true;
+            setAnswerControlsDisabled(true);
+
+            try {
+                const data = await apiFetch("/api/answer", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload),
+                });
+
+                state.turn = data.session.turn;
+                state.totalWords = data.session.total_words;
+                renderProgress(data.session.progress, data.session.turn, data.session.total_words);
+                if (state.vocabProgressOpen) {
+                    loadVocabProgress(true).catch(() => { });
+                }
+                renderResult(data.result);
+            } catch (error) {
+                state.isSubmitting = false;
+                setAnswerControlsDisabled(false);
+                alert(error.message || "Không gửi được đáp án.");
+                await loadCard();
+            }
+        }
+
+        function renderResult(result) {
+            hideResult();
+            state.keyboardChoiceEnabled = false;
+            state.isSubmitting = false;
+            setAnswerControlsDisabled(true);
+
+            const box = document.getElementById("inlineResultBox");
+            const panel = document.querySelector(".support-panel");
+            if (!box || !state.currentCard) return;
+
+            if (panel) {
+                panel.outerHTML = buildSupportPanel(state.currentCard, true);
+            }
+
+            const levelState = result.new_level === result.old_level
+                ? `B${result.new_level}`
+                : `B${result.old_level} → B${result.new_level}`;
+
+            box.className = `inline-result show ${result.status}`;
+            box.innerHTML = `
+        <div class="result-top">
+          <div class="result-title">
+            <h3>${escapeHtml(result.headline || "Kết quả")}</h3>
+            <p>${escapeHtml(result.note || "")}</p>
+          </div>
+          <button class="btn btn-primary" id="nextBtn">Space / Enter / → / ↑ · Câu tiếp theo</button>
+        </div>
+
+        <div class="result-grid">
+          <div class="result-item">
+            <label>Từ đúng</label>
+            <div>${escapeHtml(result.correct_word)}</div>
+          </div>
+          <div class="result-item">
+            <label>Bậc</label>
+            <div>${escapeHtml(levelState)}</div>
+          </div>
+          <div class="result-item">
+            <label>Nghĩa Việt</label>
+            <div>${escapeHtml(result.meaning_vi || "")}</div>
+          </div>
+          <div class="result-item">
+            <label>Chế độ</label>
+            <div>${escapeHtml(result.mode_label || "")}</div>
+          </div>
+        </div>
+      `;
+
+            document.getElementById("nextBtn").addEventListener("click", () => {
+                loadCard().catch((error) => {
+                    state.keyboardChoiceEnabled = false;
+                    showEmpty(error.message || "Không tải được câu tiếp theo.");
+                });
+            });
+        }
+
+        async function switchVocabSet(filename) {
+            clearNextTimer();
+            state.isSubmitting = false;
+
+            try {
+                const data = await apiFetch("/api/vocab-sets/select", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ filename }),
+                });
+
+                state.turn = data.session.turn;
+                state.totalWords = data.session.total_words;
+                state.selectedVocab = data.session.selected_vocab;
+                state.vocabSets = data.vocab_sets.sets || state.vocabSets;
+                state.vocabProgressData = null;
+                renderVocabPicker();
+                renderProgress(data.session.progress, data.session.turn, data.session.total_words);
+                if (state.vocabProgressOpen) {
+                    await loadVocabProgress(true);
+                }
+                await loadCard();
+            } catch (error) {
+                alert(error.message || "Không chuyển được bộ từ vựng.");
+                await refreshVocabSets();
+            }
+        }
+
+        async function resetSession() {
+            const ok = window.confirm("Bạn có chắc muốn reset toàn bộ tiến độ học không?");
+            if (!ok) return;
+
+            try {
+                const data = await apiFetch("/api/reset", { method: "POST" });
+                state.turn = data.session.turn;
+                state.totalWords = data.session.total_words;
+                state.selectedVocab = data.session.selected_vocab || state.selectedVocab;
+                state.vocabProgressData = null;
+                renderVocabPicker();
+                renderProgress(data.session.progress, data.session.turn, data.session.total_words);
+                if (state.vocabProgressOpen) {
+                    await loadVocabProgress(true);
+                }
+                await loadCard();
+            } catch (error) {
+                alert(error.message || "Không reset được tiến độ.");
+            }
+        }
+
+        document.addEventListener("keydown", (event) => {
+            const nextBtn = document.getElementById("nextBtn");
+
+            if ((event.code === "Space" || event.key === "Enter" || event.key === "ArrowRight" || event.key === "ArrowUp") && nextBtn) {
+                event.preventDefault();
+                nextBtn.click();
+                return;
+            }
+
+            if (!state.keyboardChoiceEnabled || !state.currentCard || state.currentCard.mode !== "en_to_vi" || state.isSubmitting) {
+                return;
+            }
+
+            if (["ArrowLeft", "ArrowDown"].includes(event.key)) {
+                event.preventDefault();
+                submitChoice("down");
+                return;
+            }
+
+            if (event.key === "Enter") {
+                event.preventDefault();
+                submitChoice("keep");
+                return;
+            }
+
+            if (["ArrowRight", "ArrowUp"].includes(event.key)) {
+                event.preventDefault();
+                submitChoice("up");
+            }
+        });
+
+        document.getElementById("vocabSetSelect").addEventListener("change", (event) => {
+            const filename = event.target.value;
+            if (!filename || filename === state.selectedVocab) return;
+            switchVocabSet(filename);
+        });
+
+        document.getElementById("resetBtn").addEventListener("click", resetSession);
+        document.getElementById("toggleProgressBtn").addEventListener("click", () => {
+            toggleVocabProgressDrawer().catch((error) => alert(error.message || "Không mở được bảng theo dõi từ vựng."));
+        });
+
+        (async () => {
+            try {
+                await refreshVocabSets();
+                renderVocabProgressDrawer();
+                await loadCard();
+            } catch (error) {
+                showEmpty(error.message || "Không tải được giao diện học.");
+            }
+        })();
+    </script>
+</body>
+
+</html>

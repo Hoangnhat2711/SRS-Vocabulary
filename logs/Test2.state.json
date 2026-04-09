@@ -1,0 +1,243 @@
+{
+  "version": 2,
+  "vocab_signature": "93fd3cf3e86f992859567e8b5056124b6d63b930",
+  "turn": 0,
+  "recent_history": [],
+  "review_mode_history": [],
+  "settings": {
+    "vi_to_en_ratio": 70
+  },
+  "words": {
+    "1:lean against": {
+      "status": "pending",
+      "level": null,
+      "times_seen": 0,
+      "last_seen_turn": null,
+      "last_mode": null
+    },
+    "2:railing": {
+      "status": "pending",
+      "level": null,
+      "times_seen": 0,
+      "last_seen_turn": null,
+      "last_mode": null
+    },
+    "3:reach for": {
+      "status": "pending",
+      "level": null,
+      "times_seen": 0,
+      "last_seen_turn": null,
+      "last_mode": null
+    },
+    "4:shelf": {
+      "status": "pending",
+      "level": null,
+      "times_seen": 0,
+      "last_seen_turn": null,
+      "last_mode": null
+    },
+    "5:renovation": {
+      "status": "pending",
+      "level": null,
+      "times_seen": 0,
+      "last_seen_turn": null,
+      "last_mode": null
+    },
+    "6:instructor": {
+      "status": "pending",
+      "level": null,
+      "times_seen": 0,
+      "last_seen_turn": null,
+      "last_mode": null
+    },
+    "7:approval": {
+      "status": "pending",
+      "level": null,
+      "times_seen": 0,
+      "last_seen_turn": null,
+      "last_mode": null
+    },
+    "8:transportation": {
+      "status": "pending",
+      "level": null,
+      "times_seen": 0,
+      "last_seen_turn": null,
+      "last_mode": null
+    },
+    "9:promotional": {
+      "status": "pending",
+      "level": null,
+      "times_seen": 0,
+      "last_seen_turn": null,
+      "last_mode": null
+    },
+    "10:decline": {
+      "status": "pending",
+      "level": null,
+      "times_seen": 0,
+      "last_seen_turn": null,
+      "last_mode": null
+    },
+    "11:sponsor": {
+      "status": "pending",
+      "level": null,
+      "times_seen": 0,
+      "last_seen_turn": null,
+      "last_mode": null
+    },
+    "12:property": {
+      "status": "pending",
+      "level": null,
+      "times_seen": 0,
+      "last_seen_turn": null,
+      "last_mode": null
+    },
+    "13:reward": {
+      "status": "pending",
+      "level": null,
+      "times_seen": 0,
+      "last_seen_turn": null,
+      "last_mode": null
+    },
+    "14:demand": {
+      "status": "pending",
+      "level": null,
+      "times_seen": 0,
+      "last_seen_turn": null,
+      "last_mode": null
+    },
+    "15:potential": {
+      "status": "pending",
+      "level": null,
+      "times_seen": 0,
+      "last_seen_turn": null,
+      "last_mode": null
+    },
+    "16:venue": {
+      "status": "pending",
+      "level": null,
+      "times_seen": 0,
+      "last_seen_turn": null,
+      "last_mode": null
+    },
+    "17:former": {
+      "status": "pending",
+      "level": null,
+      "times_seen": 0,
+      "last_seen_turn": null,
+      "last_mode": null
+    },
+    "18:colleague": {
+      "status": "pending",
+      "level": null,
+      "times_seen": 0,
+      "last_seen_turn": null,
+      "last_mode": null
+    },
+    "19:appropriate": {
+      "status": "pending",
+      "level": null,
+      "times_seen": 0,
+      "last_seen_turn": null,
+      "last_mode": null
+    },
+    "20:recruitment": {
+      "status": "pending",
+      "level": null,
+      "times_seen": 0,
+      "last_seen_turn": null,
+      "last_mode": null
+    },
+    "21:affordable": {
+      "status": "pending",
+      "level": null,
+      "times_seen": 0,
+      "last_seen_turn": null,
+      "last_mode": null
+    },
+    "22:typically": {
+      "status": "pending",
+      "level": null,
+      "times_seen": 0,
+      "last_seen_turn": null,
+      "last_mode": null
+    },
+    "23:durable": {
+      "status": "pending",
+      "level": null,
+      "times_seen": 0,
+      "last_seen_turn": null,
+      "last_mode": null
+    },
+    "24:justify": {
+      "status": "pending",
+      "level": null,
+      "times_seen": 0,
+      "last_seen_turn": null,
+      "last_mode": null
+    },
+    "25:inspection": {
+      "status": "pending",
+      "level": null,
+      "times_seen": 0,
+      "last_seen_turn": null,
+      "last_mode": null
+    },
+    "26:prototype": {
+      "status": "pending",
+      "level": null,
+      "times_seen": 0,
+      "last_seen_turn": null,
+      "last_mode": null
+    },
+    "27:shorten": {
+      "status": "pending",
+      "level": null,
+      "times_seen": 0,
+      "last_seen_turn": null,
+      "last_mode": null
+    },
+    "28:proof": {
+      "status": "pending",
+      "level": null,
+      "times_seen": 0,
+      "last_seen_turn": null,
+      "last_mode": null
+    },
+    "29:insurance": {
+      "status": "pending",
+      "level": null,
+      "times_seen": 0,
+      "last_seen_turn": null,
+      "last_mode": null
+    },
+    "30:upcoming": {
+      "status": "pending",
+      "level": null,
+      "times_seen": 0,
+      "last_seen_turn": null,
+      "last_mode": null
+    },
+    "31:brief": {
+      "status": "pending",
+      "level": null,
+      "times_seen": 0,
+      "last_seen_turn": null,
+      "last_mode": null
+    },
+    "32:invoice": {
+      "status": "pending",
+      "level": null,
+      "times_seen": 0,
+      "last_seen_turn": null,
+      "last_mode": null
+    },
+    "33:frequent": {
+      "status": "pending",
+      "level": null,
+      "times_seen": 0,
+      "last_seen_turn": null,
+      "last_mode": null
+    }
+  }
+}
