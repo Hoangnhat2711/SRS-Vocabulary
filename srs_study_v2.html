@@ -323,6 +323,12 @@
             gap: 6px;
         }
 
+        .overview-left {
+            width: 100%;
+            display: grid;
+            gap: 8px;
+        }
+
 
         .stats-grid {
             display: flex;
@@ -464,7 +470,7 @@
             padding: 8px 10px;
             display: grid;
             gap: 5px;
-            width: 50%;
+            width: 100%;
         }
 
         .progress-head,
@@ -518,14 +524,57 @@
 
         .overview-grid {
             display: grid;
-            grid-template-columns: minmax(0, 1fr);
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
             gap: 8px;
             align-items: start;
         }
 
         .overview-left {
+            width: 100%;
             display: grid;
             gap: 8px;
+        }
+
+        .overview-help {
+            display: grid;
+            gap: 8px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(15, 23, 42, 0.06);
+            background: linear-gradient(180deg, rgba(248, 251, 255, 0.76), rgba(255, 255, 255, 0.86));
+        }
+
+        .overview-help-title {
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--text);
+        }
+
+        .overview-help-text {
+            font-size: 12px;
+            line-height: 1.55;
+            color: var(--muted);
+        }
+
+        .overview-help-list {
+            display: grid;
+            gap: 6px;
+        }
+
+        .overview-help-item {
+            display: grid;
+            gap: 2px;
+        }
+
+        .overview-help-item strong {
+            font-size: 12px;
+            color: var(--text);
+        }
+
+        .overview-help-item span {
+            font-size: 12px;
+            line-height: 1.45;
+            color: var(--muted);
         }
 
         .mode-balance-head {
@@ -1159,6 +1208,8 @@
             line-height: 1.08;
             letter-spacing: -0.04em;
             word-break: break-word;
+            max-width: 28ch;
+            text-wrap: balance;
         }
 
         .hero-card p {
@@ -1476,6 +1527,14 @@
                 grid-template-columns: 1fr;
             }
 
+            .overview-left {
+                width: 100%;
+            }
+
+            .overview-left {
+                width: 100%;
+            }
+
             .study-view {
                 grid-template-columns: 1fr;
             }
@@ -1570,6 +1629,31 @@
                     <div class="mode-balance" id="modeBalanceBox"></div>
                 </div>
 
+                <aside class="overview-help">
+                    <div class="overview-help-title">Cách hoạt động</div>
+                    <div class="overview-help-text">Khu này giúp bạn hiểu nhanh cách học và cách hệ thống sắp xếp câu
+                        hỏi.</div>
+                    <div class="overview-help-list">
+                        <div class="overview-help-item">
+                            <strong>B1 → B5</strong>
+                            <span>B1 là mới hoặc rất yếu, B5 là đã nhớ vững.</span>
+                        </div>
+                        <div class="overview-help-item">
+                            <strong>Lên / xuống bậc</strong>
+                            <span>Trả lời tốt thì lên bậc, sai hoặc nhớ kém thì bị giữ hoặc hạ.</span>
+                        </div>
+                        <div class="overview-help-item">
+                            <strong>Điền chữ / Flashcard</strong>
+                            <span>Điền chữ để kéo đáp án ra. Flashcard để nhìn từ rồi tự đánh giá mức nhớ.</span>
+                        </div>
+                        <div class="overview-help-item">
+                            <strong>Tỷ lệ mode</strong>
+                            <span>Kéo thanh về bên nào thì mode bên đó sẽ xuất hiện nhiều hơn trong các lượt ôn kế
+                                tiếp.</span>
+                        </div>
+                    </div>
+                </aside>
+
             </div>
         </section>
 
@@ -1658,37 +1742,17 @@
 
             const balance = state.modeBalance || { vi_to_en_ratio: 70, en_to_vi_ratio: 30 };
             container.innerHTML = `
-              <div class="mode-balance-layout">
-                <div class="mode-balance-panel">
-                  <div class="mode-balance-head">
-                    <span class="mode-balance-title">Chọn kiểu luyện tập ưu tiên</span>
-                    <span class="mode-balance-value">${escapeHtml(balance.vi_to_en_ratio)}% / ${escapeHtml(balance.en_to_vi_ratio)}%</span>
-                  </div>
-                  <div class="mode-balance-legend">
-                    <span class="mode-balance-side practice">Điền chữ</span>
-                    <span class="mode-balance-side flashcards">Flashcard</span>
-                  </div>
-                  <div class="mode-balance-track">
-                    <input class="mode-slider" id="modeBalanceSlider" type="range" min="0" max="100" step="10" value="${escapeHtml(balance.vi_to_en_ratio)}" style="--mode-split:${escapeHtml(balance.vi_to_en_ratio)}%;" />
-                  </div>
+              <div class="mode-balance-panel">
+                <div class="mode-balance-head">
+                  <span class="mode-balance-title">Chọn kiểu luyện tập ưu tiên</span>
+                  <span class="mode-balance-value">${escapeHtml(balance.vi_to_en_ratio)}% / ${escapeHtml(balance.en_to_vi_ratio)}%</span>
                 </div>
-                <div class="mode-balance-help">
-                  <div class="mode-help-title">Cách hoạt động</div>
-                  <div class="mode-help-text">Kéo thanh về bên nào thì mode bên đó sẽ được ưu tiên xuất hiện nhiều hơn trong các lượt ôn kế tiếp.</div>
-                  <div class="mode-help-list">
-                    <div class="mode-help-item">
-                      <strong>B1 → B5</strong>
-                      <span>B1 là mới hoặc rất yếu, B5 là đã nhớ vững.</span>
-                    </div>
-                    <div class="mode-help-item">
-                      <strong>Lên / xuống bậc</strong>
-                      <span>Trả lời tốt thì lên bậc, trả lời sai hoặc nhớ kém thì hạ bậc.</span>
-                    </div>
-                    <div class="mode-help-item">
-                      <strong>Hai kiểu luyện</strong>
-                      <span>Điền chữ để kéo đáp án ra, flashcard để nhìn từ rồi tự đánh giá mức nhớ.</span>
-                    </div>
-                  </div>
+                <div class="mode-balance-legend">
+                  <span class="mode-balance-side practice">Điền chữ</span>
+                  <span class="mode-balance-side flashcards">Flashcard</span>
+                </div>
+                <div class="mode-balance-track">
+                  <input class="mode-slider" id="modeBalanceSlider" type="range" min="0" max="100" step="10" value="${escapeHtml(balance.vi_to_en_ratio)}" style="--mode-split:${escapeHtml(balance.vi_to_en_ratio)}%;" />
                 </div>
               </div>
             `;
@@ -1993,7 +2057,7 @@
 
             if (card.mode === "intro") {
                 heroKicker = "Làm quen từ mới";
-                heroTitle = "Nhìn từ mới rồi gõ lại một lần";
+                heroTitle = "Làm quen nhanh rồi nhập lại từ";
                 heroDescription = "Đây là lượt đầu tiên. Bạn được nhìn từ và nghĩa trước rồi nhập lại chính tả để bắt đầu tạo dấu nhớ.";
                 promptText = `${card.word} = ${card.meaning_vi || ""}`;
                 answerBlock = `
