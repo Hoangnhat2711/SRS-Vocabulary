@@ -503,7 +503,9 @@ def http_error(_, exc: HTTPException) -> JSONResponse:
 
 
 if __name__ == "__main__":
+    import os
     import uvicorn
 
-    uvicorn.run("srs_fastapi:app", host="127.0.0.1", port=8000, reload=False)
-
+    host = os.getenv("HOST", "0.0.0.0")
+    port = int(os.getenv("PORT", "8000"))
+    uvicorn.run("srs_fastapi:app", host=host, port=port, reload=False)
