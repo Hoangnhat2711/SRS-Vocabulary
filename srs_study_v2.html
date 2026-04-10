@@ -1204,12 +1204,24 @@
 
         .hero-card h2 {
             margin: 0;
-            font-size: clamp(22px, 2.1vw, 30px);
-            line-height: 1.08;
-            letter-spacing: -0.04em;
+            font-size: clamp(14px, 1vw, 16px);
+            line-height: 1.12;
+            letter-spacing: -0.02em;
             word-break: break-word;
-            max-width: 28ch;
-            text-wrap: balance;
+            max-width: none;
+            text-wrap: pretty;
+        }
+
+        .hero-card h2.single-line {
+            font-size: 12px;
+            line-height: 1.15;
+            letter-spacing: 0;
+            font-weight: 700;
+            white-space: nowrap;
+            max-width: none;
+            text-wrap: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .hero-card p {
@@ -2051,6 +2063,7 @@
 
             let heroKicker = "Gợi ý tiếng Việt";
             let heroTitle = "Nhớ từ tiếng Anh rồi nhập đáp án";
+            let heroTitleClass = "";
             let heroDescription = "Tự nhớ đáp án rồi trả lời thật dứt khoát để hệ thống cập nhật bậc chính xác hơn.";
             let promptText = card.prompt_vi || card.word || "";
             let answerBlock = "";
@@ -2088,6 +2101,7 @@
             } else {
                 heroKicker = "Kiểm tra Anh → Việt";
                 heroTitle = "Tự nhớ nghĩa rồi tự đánh giá mức độ nhớ";
+                heroTitleClass = "single-line";
                 heroDescription = "Tự nhớ nghĩa tiếng Việt trước, sau đó tự đánh giá mức độ nhớ để cập nhật bậc phù hợp.";
                 promptText = card.word;
                 answerBlock = `
@@ -2129,7 +2143,7 @@
             <div class="focus-body">
               <div class="hero-card">
                 <div class="hero-kicker">${escapeHtml(heroKicker)}</div>
-                <h2>${escapeHtml(heroTitle)}</h2>
+                <h2 class="${heroTitleClass}">${escapeHtml(heroTitle)}</h2>
                 <p>${escapeHtml(heroDescription)}</p>
                 <div class="prompt-panel">${escapeHtml(promptText)}</div>
               </div>
