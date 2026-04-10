@@ -481,7 +481,7 @@ def api_answer(payload: AnswerPayload) -> Dict:
 
         evaluation = evaluate_answer(PENDING_CARD, payload)
         apply_result(STATE, PENDING_CARD["wid"], PENDING_CARD, evaluation)
-        commit_appearance(STATE, PENDING_CARD["wid"], PENDING_CARD["mode"])
+        commit_appearance(STATE, PENDING_CARD["wid"], PENDING_CARD["mode"], PENDING_CARD.get("level"))
         persist_state_or_raise(STATE_PATH, STATE)
 
         response = {
