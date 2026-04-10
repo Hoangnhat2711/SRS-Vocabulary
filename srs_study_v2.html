@@ -323,6 +323,60 @@
             gap: 6px;
         }
 
+        .overview-summary {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .overview-summary .stats-grid {
+            flex: 1 1 640px;
+            min-width: 0;
+        }
+
+        .overview-summary-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 6px;
+            flex: 0 0 auto;
+            flex-wrap: wrap;
+        }
+
+        .overview-collapsible {
+            display: grid;
+            grid-template-rows: 1fr;
+            overflow: hidden;
+            transition: grid-template-rows 0.42s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .overview.collapsed .overview-collapsible {
+            grid-template-rows: 0fr;
+        }
+
+        .overview-toggle-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            flex: 0 0 auto;
+            white-space: nowrap;
+            min-width: 116px;
+        }
+
+        .overview-toggle-icon {
+            font-size: 13px;
+            line-height: 1;
+            display: inline-block;
+            transition: transform 0.36s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .overview-toggle-btn[aria-expanded="false"] .overview-toggle-icon {
+            transform: rotate(-90deg);
+        }
+
         .overview-left {
             width: 100%;
             display: grid;
@@ -527,6 +581,26 @@
             grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
             gap: 8px;
             align-items: start;
+            min-height: 0;
+            height: auto;
+            overflow: hidden;
+            transform-origin: top;
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: blur(0);
+            transition:
+                height 0.42s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.22s ease,
+                transform 0.42s cubic-bezier(0.16, 1, 0.3, 1),
+                filter 0.24s ease;
+            will-change: height, opacity, transform, filter;
+        }
+
+        .overview.collapsed .overview-grid {
+            opacity: 0;
+            transform: translateY(-12px) scale(0.985);
+            filter: blur(1px);
+            pointer-events: none;
         }
 
         .overview-left {
@@ -1618,54 +1692,65 @@
         </header>
 
         <section class="overview">
-            <div class="stats-grid" id="statsGrid"></div>
+            <div class="overview-summary">
+                <div class="stats-grid" id="statsGrid"></div>
+                <div class="overview-summary-actions">
+                    <button class="btn btn-ghost" id="toggleProgressBtn">Theo dõi từ vựng</button>
+                    <button class="btn btn-ghost overview-toggle-btn" id="toggleOverviewSectionBtn" type="button"
+                        aria-expanded="true">
+                        <span aria-hidden="true">▾</span>
+                        <span>Thu gọn</span>
+                    </button>
+                </div>
+            </div>
 
-            <div class="overview-grid">
-                <div class="overview-left">
-                    <div class="progress-strip">
-                        <div class="progress-head">
-                            <strong id="progressLine">Đang tải tiến độ...</strong>
-                            <div class="progress-head-right">
-                                <span id="sessionMeta"></span>
-                                <button class="btn btn-ghost" id="toggleProgressBtn">Theo dõi từ vựng</button>
+            <div class="overview-collapsible">
+                <div class="overview-grid">
+                    <div class="overview-left">
+                        <div class="progress-strip">
+                            <div class="progress-head">
+                                <strong id="progressLine">Đang tải tiến độ...</strong>
+                                <div class="progress-head-right">
+                                    <span id="sessionMeta"></span>
+                                </div>
+                            </div>
+
+                            <div class="track">
+                                <div class="fill" id="progressFill"></div>
+                            </div>
+
+                            <div class="progress-foot" id="progressFoot">Đang đồng bộ dữ liệu phiên học...</div>
+                        </div>
+
+                        <div class="mode-balance" id="modeBalanceBox"></div>
+                    </div>
+
+                    <aside class="overview-help">
+                        <div class="overview-help-title">Cách hoạt động</div>
+                        <div class="overview-help-text">Khu này giúp bạn hiểu nhanh cách học và cách hệ thống sắp xếp
+                            câu
+                            hỏi.</div>
+                        <div class="overview-help-list">
+                            <div class="overview-help-item">
+                                <strong>B1 → B5</strong>
+                                <span>B1 là mới hoặc rất yếu, B5 là đã nhớ vững.</span>
+                            </div>
+                            <div class="overview-help-item">
+                                <strong>Lên / xuống bậc</strong>
+                                <span>Trả lời tốt thì lên bậc, sai hoặc nhớ kém thì bị giữ hoặc hạ.</span>
+                            </div>
+                            <div class="overview-help-item">
+                                <strong>Điền chữ / Flashcard</strong>
+                                <span>Điền chữ để kéo đáp án ra. Flashcard để nhìn từ rồi tự đánh giá mức nhớ.</span>
+                            </div>
+                            <div class="overview-help-item">
+                                <strong>Tỷ lệ mode</strong>
+                                <span>Kéo thanh về bên nào thì mode bên đó sẽ xuất hiện nhiều hơn trong các lượt ôn kế
+                                    tiếp.</span>
                             </div>
                         </div>
-
-                        <div class="track">
-                            <div class="fill" id="progressFill"></div>
-                        </div>
-
-                        <div class="progress-foot" id="progressFoot">Đang đồng bộ dữ liệu phiên học...</div>
-                    </div>
-
-                    <div class="mode-balance" id="modeBalanceBox"></div>
+                    </aside>
                 </div>
-
-                <aside class="overview-help">
-                    <div class="overview-help-title">Cách hoạt động</div>
-                    <div class="overview-help-text">Khu này giúp bạn hiểu nhanh cách học và cách hệ thống sắp xếp câu
-                        hỏi.</div>
-                    <div class="overview-help-list">
-                        <div class="overview-help-item">
-                            <strong>B1 → B5</strong>
-                            <span>B1 là mới hoặc rất yếu, B5 là đã nhớ vững.</span>
-                        </div>
-                        <div class="overview-help-item">
-                            <strong>Lên / xuống bậc</strong>
-                            <span>Trả lời tốt thì lên bậc, sai hoặc nhớ kém thì bị giữ hoặc hạ.</span>
-                        </div>
-                        <div class="overview-help-item">
-                            <strong>Điền chữ / Flashcard</strong>
-                            <span>Điền chữ để kéo đáp án ra. Flashcard để nhìn từ rồi tự đánh giá mức nhớ.</span>
-                        </div>
-                        <div class="overview-help-item">
-                            <strong>Tỷ lệ mode</strong>
-                            <span>Kéo thanh về bên nào thì mode bên đó sẽ xuất hiện nhiều hơn trong các lượt ôn kế
-                                tiếp.</span>
-                        </div>
-                    </div>
-                </aside>
-
             </div>
         </section>
 
@@ -1693,6 +1778,8 @@
             vocabProgressData: null,
             vocabProgressFilter: "all",
             modeBalance: null,
+            overviewCollapsed: false,
+            overviewTransitionTimer: null,
         };
 
         function escapeHtml(value) {
@@ -1739,6 +1826,50 @@
         <option value="${escapeHtml(name)}">${escapeHtml(name)}</option>
       `).join("");
             select.value = state.selectedVocab || previous || state.vocabSets[0] || "";
+        }
+
+        function renderOverviewVisibility(animate = true) {
+            const overview = document.querySelector(".overview");
+            const button = document.getElementById("toggleOverviewSectionBtn");
+            const overviewGrid = overview?.querySelector(".overview-grid");
+            if (!overview || !button || !overviewGrid) return;
+
+            const expanded = !state.overviewCollapsed;
+            button.setAttribute("aria-expanded", String(expanded));
+            button.innerHTML = expanded
+                ? `<span class="overview-toggle-icon" aria-hidden="true">▾</span><span>Thu gọn</span>`
+                : `<span class="overview-toggle-icon" aria-hidden="true">▾</span><span>Hiện chi tiết</span>`;
+
+            clearTimeout(state.overviewTransitionTimer);
+
+            if (!animate) {
+                overviewGrid.style.transition = "none";
+                overview.classList.toggle("collapsed", state.overviewCollapsed);
+                overviewGrid.style.height = expanded ? "auto" : "0px";
+                overviewGrid.style.opacity = expanded ? "1" : "0";
+                overviewGrid.style.transform = expanded ? "translateY(0) scale(1)" : "translateY(-12px) scale(0.985)";
+                overviewGrid.style.filter = expanded ? "blur(0)" : "blur(1px)";
+                void overviewGrid.offsetHeight;
+                overviewGrid.style.transition = "";
+                return;
+            }
+
+            const startHeight = overviewGrid.getBoundingClientRect().height;
+            overviewGrid.style.height = `${startHeight}px`;
+            overviewGrid.style.overflow = "hidden";
+            void overviewGrid.offsetHeight;
+
+            overview.classList.toggle("collapsed", state.overviewCollapsed);
+
+            const targetHeight = expanded ? overviewGrid.scrollHeight : 0;
+            overviewGrid.style.height = `${targetHeight}px`;
+            overviewGrid.style.opacity = expanded ? "1" : "0";
+            overviewGrid.style.transform = expanded ? "translateY(0) scale(1)" : "translateY(-12px) scale(0.985)";
+            overviewGrid.style.filter = expanded ? "blur(0)" : "blur(1px)";
+
+            state.overviewTransitionTimer = window.setTimeout(() => {
+                overviewGrid.style.height = expanded ? "auto" : "0px";
+            }, 430);
         }
 
         async function refreshVocabSets() {
@@ -2393,6 +2524,11 @@
         });
 
         document.getElementById("resetBtn").addEventListener("click", resetSession);
+        document.getElementById("toggleOverviewSectionBtn").addEventListener("click", () => {
+            state.overviewCollapsed = !state.overviewCollapsed;
+            renderOverviewVisibility();
+        });
+        window.addEventListener("resize", () => renderOverviewVisibility(false));
         document.getElementById("toggleProgressBtn").addEventListener("click", () => {
             toggleVocabProgressDrawer().catch((error) => alert(error.message || "Không mở được bảng theo dõi từ vựng."));
         });
@@ -2401,6 +2537,7 @@
             try {
                 await refreshVocabSets();
                 await refreshModeBalance();
+                renderOverviewVisibility(false);
                 renderVocabProgressDrawer();
                 await loadCard();
             } catch (error) {
