@@ -1441,6 +1441,36 @@
             line-height: 1.5;
         }
 
+        .typo-callout {
+            display: grid;
+            gap: 8px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(195, 107, 20, 0.22);
+            background: linear-gradient(180deg, rgba(195, 107, 20, 0.14), rgba(255, 255, 255, 0.94));
+        }
+
+        .typo-callout-head {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            width: max-content;
+            padding: 5px 9px;
+            border-radius: 999px;
+            background: rgba(195, 107, 20, 0.14);
+            color: #8a4f13;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .typo-callout-body {
+            font-size: 13px;
+            line-height: 1.55;
+            color: #744719;
+        }
+
         .result-grid {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2392,6 +2422,13 @@
                 ? `B${result.new_level}`
                 : `B${result.old_level} → B${result.new_level}`;
 
+            const typoCallout = result.typo ? `
+        <div class="typo-callout">
+          <div class="typo-callout-head">⚠ Sai nhẹ nhưng chấp nhận</div>
+          <div class="typo-callout-body">${escapeHtml(result.typo_notice || "Bạn viết chưa chuẩn chính tả, nhưng hệ thống vẫn chấp nhận vì lỗi nằm trong mức cho phép.")}</div>
+        </div>
+      ` : "";
+
             box.className = `inline-result show ${result.status}`;
             box.innerHTML = `
         <div class="result-top">
@@ -2401,6 +2438,8 @@
           </div>
           <button class="btn btn-primary" id="nextBtn">Space / Enter / → / ↑ · Câu tiếp theo</button>
         </div>
+
+        ${typoCallout}
 
         <div class="result-grid">
           <div class="result-item">

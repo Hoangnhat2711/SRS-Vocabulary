@@ -1,0 +1,150 @@
+{
+  "test": "Test 1",
+  "count": 12,
+  "items": [
+    {
+      "stt": 1,
+      "test": "Test 1",
+      "word": "Beverage",
+      "definition_raw": "đồ uống; nước giải khát = a drink such as water, coffee, or juice",
+      "meaning_vi": "đồ uống; nước giải khát",
+      "meaning_en": "a drink such as water, coffee, or juice",
+      "example_1": "The restaurant serves many [beverages]. (Dịch: Nhà hàng phục vụ nhiều loại đồ uống.)",
+      "example_2": "Complimentary [beverages] are provided on the flight. (Dịch: Đồ uống miễn phí được cung cấp trên chuyến bay.)",
+      "phonetic": "/ˈbevərɪdʒ/",
+      "notes": "Collocations: soft beverage, cold beverage"
+    },
+    {
+      "stt": 2,
+      "test": "Test 1",
+      "word": "Light fixture",
+      "definition_raw": "thiết bị chiếu sáng = an electric device that holds a light bulb",
+      "meaning_vi": "thiết bị chiếu sáng",
+      "meaning_en": "an electric device that holds a light bulb",
+      "example_1": "The [light fixture] in the office needs replacement. (Dịch: Đèn trong văn phòng cần được thay.)",
+      "example_2": "Modern [light fixtures] improve the room’s appearance. (Dịch: Đèn hiện đại cải thiện diện mạo căn phòng.)",
+      "phonetic": "/laɪt ˈfɪkstʃər/",
+      "notes": "Context: building, interior"
+    },
+    {
+      "stt": 3,
+      "test": "Test 1",
+      "word": "Competent",
+      "definition_raw": "có năng lực = having the necessary ability or skills",
+      "meaning_vi": "có năng lực",
+      "meaning_en": "having the necessary ability or skills",
+      "example_1": "She is a [competent] engineer. (Dịch: Cô ấy là kỹ sư có năng lực.)",
+      "example_2": "The technician is [competent] at solving problems. (Dịch: Kỹ thuật viên có khả năng giải quyết vấn đề.)",
+      "phonetic": "/ˈkɑːmpɪtənt/",
+      "notes": "Synonym: capable"
+    },
+    {
+      "stt": 4,
+      "test": "Test 1",
+      "word": "Brochure",
+      "definition_raw": "tờ rơi; sách giới thiệu = a small booklet giving information",
+      "meaning_vi": "tờ rơi; sách giới thiệu",
+      "meaning_en": "a small booklet giving information",
+      "example_1": "The travel agency gave us a [brochure]. (Dịch: Công ty du lịch đưa chúng tôi tờ giới thiệu.)",
+      "example_2": "Please read the [brochure] before booking the tour. (Dịch: Hãy đọc tờ rơi trước khi đặt tour.)",
+      "phonetic": "/broʊˈʃʊr/",
+      "notes": "Collocations: travel brochure"
+    },
+    {
+      "stt": 5,
+      "test": "Test 1",
+      "word": "Demonstration",
+      "definition_raw": "sự trình diễn; minh họa = showing how something works",
+      "meaning_vi": "sự trình diễn; minh họa",
+      "meaning_en": "showing how something works",
+      "example_1": "The company held a product [demonstration]. (Dịch: Công ty tổ chức buổi trình diễn sản phẩm.)",
+      "example_2": "A cooking [demonstration] attracted many visitors. (Dịch: Buổi minh họa nấu ăn thu hút nhiều khách.)",
+      "phonetic": "/ˌdemənˈstreɪʃn/",
+      "notes": "Context: marketing"
+    },
+    {
+      "stt": 6,
+      "test": "Test 1",
+      "word": "In charge of",
+      "definition_raw": "phụ trách = responsible for something",
+      "meaning_vi": "phụ trách",
+      "meaning_en": "responsible for something",
+      "example_1": "She is [in charge of] customer service. (Dịch: Cô ấy phụ trách dịch vụ khách hàng.)",
+      "example_2": "He is [in charge of] organizing the meeting. (Dịch: Anh ấy chịu trách nhiệm tổ chức cuộc họp.)",
+      "phonetic": "/ɪn tʃɑːrdʒ əv/",
+      "notes": "Synonym: responsible for"
+    },
+    {
+      "stt": 7,
+      "test": "Test 1",
+      "word": "Crew",
+      "definition_raw": "đội; nhóm nhân viên = a group of workers working together",
+      "meaning_vi": "đội; nhóm nhân viên",
+      "meaning_en": "a group of workers working together",
+      "example_1": "The flight [crew] welcomed passengers. (Dịch: Tổ bay chào đón hành khách.)",
+      "example_2": "The construction [crew] finished the project early. (Dịch: Đội xây dựng hoàn thành dự án sớm.)",
+      "phonetic": "/kruː/",
+      "notes": "Collocations: flight crew"
+    },
+    {
+      "stt": 8,
+      "test": "Test 1",
+      "word": "Merchandise",
+      "definition_raw": "hàng hóa = goods that are bought and sold",
+      "meaning_vi": "hàng hóa",
+      "meaning_en": "goods that are bought and sold",
+      "example_1": "The store sells imported [merchandise]. (Dịch: Cửa hàng bán hàng nhập khẩu.)",
+      "example_2": "New [merchandise] arrived this morning. (Dịch: Hàng hóa mới đã đến sáng nay.)",
+      "phonetic": "/ˈmɜːrtʃəndaɪs/",
+      "notes": "Business vocabulary"
+    },
+    {
+      "stt": 9,
+      "test": "Test 1",
+      "word": "Revise",
+      "definition_raw": "sửa đổi; ôn lại = to change something to improve it",
+      "meaning_vi": "sửa đổi; ôn lại",
+      "meaning_en": "to change something to improve it",
+      "example_1": "Please [revise] the report before submitting it. (Dịch: Hãy chỉnh sửa báo cáo trước khi nộp.)",
+      "example_2": "She [revised] her notes for the exam. (Dịch: Cô ấy ôn lại ghi chú cho kỳ thi.)",
+      "phonetic": "/rɪˈvaɪz/",
+      "notes": "Word family: revision"
+    },
+    {
+      "stt": 10,
+      "test": "Test 1",
+      "word": "Get rid of",
+      "definition_raw": "loại bỏ = to remove something unwanted",
+      "meaning_vi": "loại bỏ",
+      "meaning_en": "to remove something unwanted",
+      "example_1": "We need to [get rid of] old equipment. (Dịch: Chúng ta cần loại bỏ thiết bị cũ.)",
+      "example_2": "The company wants to [get rid of] unnecessary expenses. (Dịch: Công ty muốn loại bỏ chi phí không cần thiết.)",
+      "phonetic": "/ɡet rɪd əv/",
+      "notes": "Phrasal verb"
+    },
+    {
+      "stt": 11,
+      "test": "Test 1",
+      "word": "Negotiate",
+      "definition_raw": "đàm phán = to discuss to reach an agreement",
+      "meaning_vi": "đàm phán",
+      "meaning_en": "to discuss to reach an agreement",
+      "example_1": "They [negotiated] the contract terms. (Dịch: Họ đàm phán điều khoản hợp đồng.)",
+      "example_2": "The manager will [negotiate] with suppliers. (Dịch: Quản lý sẽ thương lượng với nhà cung cấp.)",
+      "phonetic": "/nɪˈɡoʊʃieɪt/",
+      "notes": "Collocations: negotiate a deal"
+    },
+    {
+      "stt": 12,
+      "test": "Test 1",
+      "word": "Malfunction",
+      "definition_raw": "trục trặc; hỏng hóc = when a machine fails to work properly",
+      "meaning_vi": "trục trặc; hỏng hóc",
+      "meaning_en": "when a machine fails to work properly",
+      "example_1": "The printer [malfunctioned] yesterday. (Dịch: Máy in bị trục trặc hôm qua.)",
+      "example_2": "A technical [malfunction] delayed the flight. (Dịch: Sự cố kỹ thuật làm chậm chuyến bay.)",
+      "phonetic": "/ˌmælˈfʌŋkʃn/",
+      "notes": "Context: machines"
+    }
+  ]
+}

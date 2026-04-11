@@ -1,8 +1,0 @@
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.git/
-.DS_Store
-screenshots/
-logs/server-*.log

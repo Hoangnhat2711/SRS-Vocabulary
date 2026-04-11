@@ -44,6 +44,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel
 
+from db import init_db
+
 BASE_LEVEL_WEIGHTS = {1: 45, 2: 25, 3: 15, 4: 10, 5: 5}
 LEVEL_ONE_TARGET = 10
 RECENT_HISTORY_WINDOW = 5
@@ -579,6 +581,7 @@ def apply_result(state: Dict, wid: str, card: Dict, result: Dict) -> None:
 
 VOCAB_DIR, LOG_DIR = ensure_storage_dirs(BASE_DIR)
 HTML_PATH = BASE_DIR / "srs_study_v2.html"
+init_db()
 
 app = FastAPI(title="SRS Vocabulary API", version="2.0.0")
 app.add_middleware(

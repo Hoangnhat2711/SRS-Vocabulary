@@ -1,0 +1,188 @@
+MÔ TẢ CẤU TRÚC FILE JSON TỔNG: All_Tests.json
+
+File: List_Vocab/All_Tests.json
+
+1. MỤC ĐÍCH
+- File này gom toàn bộ dữ liệu từ Test 1 đến Test 10 vào một JSON duy nhất.
+- Dùng khi muốn đọc toàn bộ kho từ vựng chỉ bằng 1 file.
+
+2. CẤU TRÚC TỔNG QUÁT
+File JSON có 5 key cấp cao nhất:
+
+- title
+- total_tests
+- total_items
+- tests
+- items
+
+3. Ý NGHĨA TỪNG KEY
+
+3.1. title
+- Kiểu dữ liệu: string
+- Ý nghĩa: tên mô tả file JSON tổng.
+- Ví dụ:
+  "title": "All Tests Combined"
+
+3.2. total_tests
+- Kiểu dữ liệu: number
+- Ý nghĩa: tổng số test đã được gộp vào file.
+- Ví dụ:
+  "total_tests": 10
+
+3.3. total_items
+- Kiểu dữ liệu: number
+- Ý nghĩa: tổng số từ/cụm từ của tất cả các test cộng lại.
+- Ví dụ:
+  "total_items": 372
+
+3.4. tests
+- Kiểu dữ liệu: array
+- Ý nghĩa: danh sách tóm tắt từng test.
+- Mỗi phần tử trong mảng tests là một object có 3 field:
+
+  - test: tên test
+  - count: số lượng item trong test đó
+  - file: tên file JSON riêng tương ứng
+
+- Ví dụ 1 phần tử:
+  {
+    "test": "Test 1",
+    "count": 12,
+    "file": "Test_1.json"
+  }
+
+3.5. items
+- Kiểu dữ liệu: array
+- Ý nghĩa: danh sách toàn bộ item vocab của tất cả test.
+- Đây là phần quan trọng nhất trong file.
+
+4. CẤU TRÚC MỖI ITEM TRONG items
+Mỗi phần tử trong items là một object có các field sau:
+
+- stt
+- test
+- word
+- definition_raw
+- meaning_vi
+- meaning_en
+- example_1
+- example_2
+- phonetic
+- notes
+
+5. Ý NGHĨA CHI TIẾT TỪNG FIELD TRONG ITEM
+
+5.1. stt
+- Kiểu dữ liệu: number
+- Ý nghĩa: số thứ tự của từ trong test gốc.
+- Ví dụ:
+  "stt": 1
+
+5.2. test
+- Kiểu dữ liệu: string
+- Ý nghĩa: tên test mà từ này thuộc về.
+- Ví dụ:
+  "test": "Test 1"
+
+5.3. word
+- Kiểu dữ liệu: string
+- Ý nghĩa: từ hoặc cụm từ tiếng Anh.
+- Ví dụ:
+  "word": "Beverage"
+
+5.4. definition_raw
+- Kiểu dữ liệu: string
+- Ý nghĩa: định nghĩa gốc đầy đủ đúng như dữ liệu đầu vào, thường gồm nghĩa Việt + dấu = + nghĩa Anh.
+- Ví dụ:
+  "definition_raw": "đồ uống; nước giải khát = a drink such as water, coffee, or juice"
+
+5.5. meaning_vi
+- Kiểu dữ liệu: string
+- Ý nghĩa: phần nghĩa tiếng Việt được tách riêng ra từ definition_raw.
+- Ví dụ:
+  "meaning_vi": "đồ uống; nước giải khát"
+
+5.6. meaning_en
+- Kiểu dữ liệu: string
+- Ý nghĩa: phần giải thích tiếng Anh được tách riêng ra từ definition_raw.
+- Ví dụ:
+  "meaning_en": "a drink such as water, coffee, or juice"
+
+5.7. example_1
+- Kiểu dữ liệu: string
+- Ý nghĩa: ví dụ câu thứ nhất.
+- Ví dụ:
+  "example_1": "The restaurant serves many [beverages]. (Dịch: Nhà hàng phục vụ nhiều loại đồ uống.)"
+
+5.8. example_2
+- Kiểu dữ liệu: string
+- Ý nghĩa: ví dụ câu thứ hai.
+- Ví dụ:
+  "example_2": "Complimentary [beverages] are provided on the flight. (Dịch: Đồ uống miễn phí được cung cấp trên chuyến bay.)"
+
+5.9. phonetic
+- Kiểu dữ liệu: string
+- Ý nghĩa: phiên âm của từ/cụm từ.
+- Ví dụ:
+  "phonetic": "/ˈbevərɪdʒ/"
+
+5.10. notes
+- Kiểu dữ liệu: string
+- Ý nghĩa: ghi chú thêm như collocation, context, word family, opposite...
+- Ví dụ:
+  "notes": "Collocations: soft beverage, cold beverage"
+
+6. VÍ DỤ MẪU 1 ITEM ĐẦY ĐỦ
+{
+  "stt": 1,
+  "test": "Test 1",
+  "word": "Beverage",
+  "definition_raw": "đồ uống; nước giải khát = a drink such as water, coffee, or juice",
+  "meaning_vi": "đồ uống; nước giải khát",
+  "meaning_en": "a drink such as water, coffee, or juice",
+  "example_1": "The restaurant serves many [beverages]. (Dịch: Nhà hàng phục vụ nhiều loại đồ uống.)",
+  "example_2": "Complimentary [beverages] are provided on the flight. (Dịch: Đồ uống miễn phí được cung cấp trên chuyến bay.)",
+  "phonetic": "/ˈbevərɪdʒ/",
+  "notes": "Collocations: soft beverage, cold beverage"
+}
+
+7. VÍ DỤ CẤU TRÚC JSON TỔNG RÚT GỌN
+{
+  "title": "All Tests Combined",
+  "total_tests": 10,
+  "total_items": 372,
+  "tests": [
+    {
+      "test": "Test 1",
+      "count": 12,
+      "file": "Test_1.json"
+    }
+  ],
+  "items": [
+    {
+      "stt": 1,
+      "test": "Test 1",
+      "word": "Beverage",
+      "definition_raw": "đồ uống; nước giải khát = a drink such as water, coffee, or juice",
+      "meaning_vi": "đồ uống; nước giải khát",
+      "meaning_en": "a drink such as water, coffee, or juice",
+      "example_1": "...",
+      "example_2": "...",
+      "phonetic": "/ˈbevərɪdʒ/",
+      "notes": "..."
+    }
+  ]
+}
+
+8. KHI NÀO NÊN DÙNG FILE NÀY
+- Khi muốn load toàn bộ từ vựng chỉ bằng 1 file.
+- Khi muốn import dữ liệu vào database.
+- Khi muốn làm admin panel đọc chung một nguồn dữ liệu.
+- Khi muốn search toàn bộ các test cùng lúc.
+
+9. KHI NÀO NÊN DÙNG CÁC FILE JSON RIÊNG
+- Khi chỉ cần load từng test riêng lẻ.
+- Khi muốn chia nhỏ dữ liệu theo bộ học.
+- Khi muốn quản lý từng list độc lập.
+
+KẾT THÚC MÔ TẢ CẤU TRÚC.
