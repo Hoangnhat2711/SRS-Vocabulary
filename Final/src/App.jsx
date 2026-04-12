@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   getCard as getCardLocal,
   getModeBalance as getModeBalanceLocal,
@@ -196,12 +196,12 @@ function ResultBox({ result, onNext }) {
   )
 }
 
-function ProgressDrawer({ open, data, filter, onFilterChange }) {
-  if (!open) return <section className="workspace drawer" id="vocabProgressDrawer" />
+function ProgressDrawer({ open, data, filter, onFilterChange, drawerRef }) {
+  if (!open) return <section ref={drawerRef} className="workspace drawer" id="vocabProgressDrawer" />
 
   if (!data) {
     return (
-      <section className="workspace drawer show" id="vocabProgressDrawer">
+      <section ref={drawerRef} className="workspace drawer show" id="vocabProgressDrawer">
         <div className="drawer-head">
           <div>
             <h3>Đang tải bảng theo dõi từ vựng...</h3>
@@ -226,7 +226,7 @@ function ProgressDrawer({ open, data, filter, onFilterChange }) {
   })
 
   return (
-    <section className="workspace drawer show" id="vocabProgressDrawer">
+    <section ref={drawerRef} className="workspace drawer show" id="vocabProgressDrawer">
       <div className="drawer-head">
         <div>
           <h3>Theo dõi từ vựng · {data.selected_vocab || ''}</h3>
@@ -315,6 +315,7 @@ function EmptyState({ message }) {
 }
 
 function App() {
+  const drawerRef = useRef(null)
   const [session, setSession] = useState(null)
   const [currentCard, setCurrentCard] = useState(null)
   const [result, setResult] = useState(null)
@@ -384,6 +385,16 @@ function App() {
   useEffect(() => {
     bootstrap()
   }, [bootstrap])
+
+  useEffect(() => {
+    if (!vocabProgressOpen) return
+
+    const frame = window.requestAnimationFrame(() => {
+      drawerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
+
+    return () => window.cancelAnimationFrame(frame)
+  }, [vocabProgressOpen, vocabProgressData])
 
   useEffect(() => {
     const onKeyDown = (event) => {
@@ -677,6 +688,7 @@ function App() {
         data={vocabProgressData}
         filter={vocabProgressFilter}
         onFilterChange={setVocabProgressFilter}
+        drawerRef={drawerRef}
       />
 
       <section className="workspace">
