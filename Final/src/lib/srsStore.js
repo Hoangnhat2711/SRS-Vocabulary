@@ -135,6 +135,25 @@ function loadContext(requestedSelection = null) {
     }
 }
 
+function previewContextForSelection(rootState, requestedSelection) {
+    const resolved = resolveSelection(requestedSelection)
+    const signature = vocabSignature(resolved.vocab)
+    const stateKey = resolved.selectedName
+
+    let state = rootState.vocab_states[stateKey]
+    if (!state || typeof state !== 'object' || state.vocab_signature !== signature) {
+        state = buildInitialState(signature, resolved.vocab)
+    } else {
+        state = ensureStateDefaults(cloneDeep(state))
+    }
+
+    return {
+        state,
+        stateKey,
+        ...resolved,
+    }
+}
+
 function persistContext(context, nextPendingCard = undefined) {
     const root = ensureRootStateShape(context.root)
     root.selected_vocab = context.stateKey
@@ -187,6 +206,31 @@ function vocabSetsPayload(context) {
     }
 }
 
+function catalogItemPayload(snapshot, selectedName) {
+    const summary = progressPayload(snapshot.state)
+    const metas = Object.values(snapshot.state.words)
+    const startedWords = metas.filter((meta) => meta.status !== 'pending' && !meta.excluded).length
+    const excludedWords = metas.filter((meta) => meta.excluded).length
+    const masteredWords = metas.filter((meta) => meta.level === 5 && !meta.excluded).length
+    const activeWords = Math.max(0, snapshot.vocab.length - excludedWords)
+    const completionPercent = activeWords > 0
+        ? Math.round((masteredWords / activeWords) * 100)
+        : 100
+
+    return {
+        name: snapshot.stateKey,
+        source_name: snapshot.sourceName,
+        total_words: snapshot.vocab.length,
+        started_words: startedWords,
+        excluded_words: excludedWords,
+        mastered_words: masteredWords,
+        active_words: activeWords,
+        completion_percent: completionPercent,
+        summary,
+        is_current: snapshot.stateKey === selectedName,
+    }
+}
+
 export async function getStatus() {
     const context = loadContext()
     return {
@@ -217,6 +261,17 @@ export async function getCard() {
 export async function getVocabSets() {
     const context = loadContext()
     return vocabSetsPayload(context)
+}
+
+export async function getVocabCatalog() {
+    const root = ensureRootStateShape(readRootState())
+    const names = listSourceNames()
+    const selectedName = names.includes(root.selected_vocab) ? root.selected_vocab : (names[0] ?? null)
+
+    return {
+        selected: selectedName,
+        items: names.map((name) => catalogItemPayload(previewContextForSelection(root, name), selectedName)),
+    }
 }
 
 export async function getVocabProgress() {

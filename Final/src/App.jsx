@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   getCard as getCardLocal,
+  getVocabCatalog as getVocabCatalogLocal,
   getModeBalance as getModeBalanceLocal,
   getStatus as getStatusLocal,
   getVocabProgress as getVocabProgressLocal,
@@ -41,6 +42,8 @@ async function apiFetch(path, options = {}) {
         return await getStatusLocal().then((data) => data.vocab_sets)
       case 'GET /api/vocab-progress':
         return await getVocabProgressLocal()
+      case 'GET /api/vocab-catalog':
+        return await getVocabCatalogLocal()
       case 'GET /api/mode-balance':
         return await getModeBalanceLocal()
       case 'POST /api/mode-balance':
@@ -327,13 +330,86 @@ function EmptyState({ message }) {
   )
 }
 
+function CatalogScreen({ catalogData, onStartStudy, busyName }) {
+  if (!catalogData) {
+    return (
+      <section className="catalog-screen loading-state">
+        <div className="catalog-hero-card">
+          <div className="catalog-badge">SRS Vocabulary</div>
+          <h2>Đang tải thư viện bộ từ vựng...</h2>
+          <p>Hệ thống đang chuẩn bị danh sách bộ từ, tiến độ và các thông tin để bạn chọn chương trình học phù hợp.</p>
+        </div>
+      </section>
+    )
+  }
+
+  const items = catalogData.items || []
+  const featured = items.find((item) => item.is_current) || items[0] || null
+
+  return (
+    <section className="catalog-screen">
+      <div className="catalog-hero-card">
+        <div className="catalog-badge">Thư viện bộ từ vựng</div>
+        <h2>Chọn chương trình học trước khi bắt đầu</h2>
+
+        <div className="catalog-hero-actions">
+          <div className="catalog-hero-note">Bạn có thể chọn bất kỳ bộ nào bên dưới để vào màn hình học.</div>
+        </div>
+      </div>
+
+      <div className="catalog-grid">
+        {items.map((item) => (
+          <article key={item.name} className={`catalog-card ${item.is_current ? 'current' : ''}`}>
+            <div className="catalog-card-top">
+              <div className="catalog-card-heading">
+                <div className="catalog-card-title">{item.name}</div>
+                <div className="catalog-card-sub">{item.total_words} từ · {item.excluded_words} từ đã loại bỏ</div>
+                {item.is_current ? <span className="catalog-current-pill">Đang chọn</span> : null}
+              </div>
+
+              <div className="catalog-card-top-actions">
+                <button
+                  className="btn btn-primary"
+                  disabled={busyName === item.name}
+                  onClick={() => onStartStudy(item.name)}
+                >
+                  {item.is_current ? 'Tiếp tục học' : 'Chọn bộ này'}
+                </button>
+              </div>
+            </div>
+
+            <div className="catalog-chip-row">
+              <span className="catalog-chip">Đã mở {item.started_words}</span>
+            </div>
+
+            <div className="catalog-level-row">
+              <span className="catalog-level-pill level-b1">B1 {item.summary.b1}</span>
+              <span className="catalog-level-pill level-b2">B2 {item.summary.b2}</span>
+              <span className="catalog-level-pill level-b3">B3 {item.summary.b3}</span>
+              <span className="catalog-level-pill level-b4">B4 {item.summary.b4}</span>
+              <span className="catalog-level-pill level-b5">B5 {item.summary.b5}</span>
+              <span className="catalog-level-pill level-pending">Chưa mở {item.summary.pending}</span>
+            </div>
+
+            <div className="catalog-progress-bar">
+              <div className="catalog-progress-fill" style={{ width: `${item.completion_percent}%` }} />
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  )
+}
+
 function App() {
   const drawerRef = useRef(null)
   const didBootstrapRef = useRef(false)
+  const [screen, setScreen] = useState('catalog')
   const [session, setSession] = useState(null)
   const [currentCard, setCurrentCard] = useState(null)
   const [result, setResult] = useState(null)
   const [answerValue, setAnswerValue] = useState('')
+  const [catalogData, setCatalogData] = useState(null)
   const [vocabSets, setVocabSets] = useState([])
   const [selectedVocab, setSelectedVocab] = useState('')
   const [modeBalance, setModeBalance] = useState({ vi_to_en_ratio: 70, en_to_vi_ratio: 30 })
@@ -343,6 +419,7 @@ function App() {
   const [vocabProgressFilter, setVocabProgressFilter] = useState('all')
   const [overviewCollapsed, setOverviewCollapsed] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [busyCatalogName, setBusyCatalogName] = useState('')
   const [busyExcludedWid, setBusyExcludedWid] = useState('')
   const [doneMessage, setDoneMessage] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
@@ -359,6 +436,12 @@ function App() {
   const loadVocabProgress = useCallback(async () => {
     const data = await apiFetch('/api/vocab-progress')
     setVocabProgressData(data)
+    return data
+  }, [])
+
+  const loadCatalog = useCallback(async () => {
+    const data = await apiFetch('/api/vocab-catalog')
+    setCatalogData(data)
     return data
   }, [])
 
@@ -387,15 +470,18 @@ function App() {
 
   const bootstrap = useCallback(async () => {
     try {
-      const status = await apiFetch('/api/status')
+      const [status, catalog] = await Promise.all([
+        apiFetch('/api/status'),
+        loadCatalog(),
+      ])
       applySession(status.session)
       setSelectedVocab(status.vocab_sets?.selected || '')
       setVocabSets(status.vocab_sets?.sets || [])
-      await loadCard()
+      setCatalogData(catalog)
     } catch (error) {
       setErrorMessage(error.message || 'Không tải được giao diện học.')
     }
-  }, [applySession, loadCard])
+  }, [applySession, loadCatalog])
 
   useEffect(() => {
     if (didBootstrapRef.current) return
@@ -483,6 +569,7 @@ function App() {
       if (vocabProgressOpen) {
         loadVocabProgress().catch(() => { })
       }
+      loadCatalog().catch(() => { })
     } catch (error) {
       setErrorMessage(error.message || 'Không gửi được đáp án.')
       setIsSubmitting(false)
@@ -519,6 +606,7 @@ function App() {
       if (vocabProgressOpen) {
         await loadVocabProgress()
       }
+      await loadCatalog()
       await loadCard()
     } catch (error) {
       setErrorMessage(error.message || 'Không chuyển được bộ từ vựng.')
@@ -538,6 +626,7 @@ function App() {
       if (vocabProgressOpen) {
         await loadVocabProgress()
       }
+      await loadCatalog()
       await loadCard()
     } catch (error) {
       setErrorMessage(error.message || 'Không reset được tiến độ.')
@@ -589,6 +678,7 @@ function App() {
 
       applySession(data.session)
       setVocabProgressData(data.vocab_progress)
+      await loadCatalog()
 
       if (excluded && currentCard?.wid === wid) {
         setResult(null)
@@ -600,6 +690,42 @@ function App() {
     } finally {
       setBusyExcludedWid('')
     }
+  }
+
+  async function startStudyFromCatalog(filename) {
+    const targetName = filename || selectedVocab || catalogData?.selected || catalogData?.items?.[0]?.name
+    if (!targetName) return
+
+    setBusyCatalogName(targetName)
+    setErrorMessage('')
+
+    try {
+      if (targetName !== selectedVocab) {
+        const data = await apiFetch('/api/vocab-sets/select', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ filename: targetName }),
+        })
+        applySession(data.session)
+        setSelectedVocab(data.session.selected_vocab)
+        setVocabSets(data.vocab_sets?.sets || [])
+      }
+
+      await loadCatalog()
+      await loadCard()
+      setScreen('study')
+    } catch (error) {
+      setErrorMessage(error.message || 'Không thể mở bộ từ để bắt đầu học.')
+    } finally {
+      setBusyCatalogName('')
+    }
+  }
+
+  function goToCatalogScreen() {
+    setScreen('catalog')
+    loadCatalog().catch((error) => {
+      setErrorMessage(error.message || 'Không tải được thư viện bộ từ.')
+    })
   }
 
   return (
@@ -618,24 +744,35 @@ function App() {
           </div>
         </div>
 
-        <div className="toolbar">
-          <label className="select-wrap">
-            <span>Bộ từ vựng</span>
-            <select value={selectedVocab} onChange={(event) => switchVocabSet(event.target.value)}>
-              {vocabSets.map((name) => (
-                <option key={name} value={name}>{name}</option>
-              ))}
-            </select>
-          </label>
-          <div className="toolbar-actions">
-            <button className="btn btn-danger" id="resetBtn" onClick={resetSession}>Reset tiến độ</button>
+        {screen === 'study' ? (
+          <div className="toolbar">
+            <label className="select-wrap">
+              <span>Bộ từ vựng</span>
+              <select value={selectedVocab} onChange={(event) => switchVocabSet(event.target.value)}>
+                {vocabSets.map((name) => (
+                  <option key={name} value={name}>{name}</option>
+                ))}
+              </select>
+            </label>
+            <div className="toolbar-actions">
+              <button className="btn btn-secondary" onClick={goToCatalogScreen}>Thư viện bộ từ</button>
+              <button className="btn btn-danger" id="resetBtn" onClick={resetSession}>Reset tiến độ</button>
+            </div>
           </div>
-        </div>
+        ) : null}
       </header>
 
       {errorMessage ? <div className="error-banner">{errorMessage}</div> : null}
 
-      <section className={`overview ${overviewCollapsed ? 'collapsed' : ''}`}>
+      {screen === 'catalog' ? (
+        <CatalogScreen
+          catalogData={catalogData}
+          onStartStudy={startStudyFromCatalog}
+          busyName={busyCatalogName}
+        />
+      ) : null}
+
+      {screen === 'study' ? <section className={`overview ${overviewCollapsed ? 'collapsed' : ''}`}>
         <div className="overview-summary">
           <div className="stats-grid" id="statsGrid">
             {stats.map((item) => (
@@ -726,9 +863,9 @@ function App() {
             </aside>
           </div>
         </div>
-      </section>
+      </section> : null}
 
-      <ProgressDrawer
+      {screen === 'study' ? <ProgressDrawer
         open={vocabProgressOpen}
         data={vocabProgressData}
         filter={vocabProgressFilter}
@@ -736,9 +873,9 @@ function App() {
         onToggleExcluded={toggleExcludedWord}
         busyExcludedWid={busyExcludedWid}
         drawerRef={drawerRef}
-      />
+      /> : null}
 
-      <section className="workspace">
+      {screen === 'study' ? <section className="workspace">
         <div id="studyArea">
           {currentCard ? (
             <div className="study-view">
@@ -844,7 +981,7 @@ function App() {
             <EmptyState message={errorMessage || doneMessage || 'Đang tải giao diện học...'} />
           )}
         </div>
-      </section>
+      </section> : null}
     </div>
   )
 }
