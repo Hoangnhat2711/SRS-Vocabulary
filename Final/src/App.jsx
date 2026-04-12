@@ -263,7 +263,6 @@ function ProgressDrawer({ open, data, filter, onFilterChange, drawerRef }) {
               <th>Từ</th>
               <th>Nghĩa Việt</th>
               <th>Trạng thái</th>
-              <th>Bậc</th>
               <th>Số lần hỏi</th>
               <th>Lượt gần nhất</th>
               <th>Chế độ gần nhất</th>
@@ -273,7 +272,6 @@ function ProgressDrawer({ open, data, filter, onFilterChange, drawerRef }) {
           <tbody>
             {filteredItems.length ? filteredItems.map((item) => {
               const levelClass = item.opened ? `level-${item.level}` : 'level-none'
-              const statusClass = item.opened ? 'status-open' : 'status-pending'
               return (
                 <tr key={item.wid}>
                   <td>{item.index}</td>
@@ -282,7 +280,6 @@ function ProgressDrawer({ open, data, filter, onFilterChange, drawerRef }) {
                     <div className="table-sub">{item.pos || ''}</div>
                   </td>
                   <td>{item.meaning_vi || ''}</td>
-                  <td><span className={`status-pill ${statusClass}`}>{item.status_label}</span></td>
                   <td><span className={`level-pill ${levelClass}`}>{item.level_label}</span></td>
                   <td>{item.times_seen ?? 0}</td>
                   <td>{item.last_seen_turn ?? '—'}</td>
@@ -292,7 +289,7 @@ function ProgressDrawer({ open, data, filter, onFilterChange, drawerRef }) {
               )
             }) : (
               <tr>
-                <td colSpan="9">Không có từ nào khớp bộ lọc hiện tại.</td>
+                <td colSpan="8">Không có từ nào khớp bộ lọc hiện tại.</td>
               </tr>
             )}
           </tbody>
@@ -316,6 +313,7 @@ function EmptyState({ message }) {
 
 function App() {
   const drawerRef = useRef(null)
+  const didBootstrapRef = useRef(false)
   const [session, setSession] = useState(null)
   const [currentCard, setCurrentCard] = useState(null)
   const [result, setResult] = useState(null)
@@ -341,11 +339,11 @@ function App() {
     }
   }, [])
 
-  const loadVocabProgress = useCallback(async (force = false) => {
-    if (!force && vocabProgressData) return
+  const loadVocabProgress = useCallback(async () => {
     const data = await apiFetch('/api/vocab-progress')
     setVocabProgressData(data)
-  }, [vocabProgressData])
+    return data
+  }, [])
 
   const loadCard = useCallback(async () => {
     setIsSubmitting(false)
@@ -355,7 +353,7 @@ function App() {
     applySession(data.session)
 
     if (vocabProgressOpen) {
-      loadVocabProgress(true).catch(() => { })
+      loadVocabProgress().catch(() => { })
     }
 
     if (data.done) {
@@ -383,6 +381,8 @@ function App() {
   }, [applySession, loadCard])
 
   useEffect(() => {
+    if (didBootstrapRef.current) return
+    didBootstrapRef.current = true
     bootstrap()
   }, [bootstrap])
 
@@ -464,7 +464,7 @@ function App() {
       applySession(data.session)
       setResult(data.result)
       if (vocabProgressOpen) {
-        loadVocabProgress(true).catch(() => { })
+        loadVocabProgress().catch(() => { })
       }
     } catch (error) {
       setErrorMessage(error.message || 'Không gửi được đáp án.')
@@ -500,7 +500,7 @@ function App() {
       setVocabSets(data.vocab_sets?.sets || vocabSets)
       setVocabProgressData(null)
       if (vocabProgressOpen) {
-        await loadVocabProgress(true)
+        await loadVocabProgress()
       }
       await loadCard()
     } catch (error) {
@@ -519,7 +519,7 @@ function App() {
       applySession(data.session)
       setVocabProgressData(null)
       if (vocabProgressOpen) {
-        await loadVocabProgress(true)
+        await loadVocabProgress()
       }
       await loadCard()
     } catch (error) {
@@ -550,7 +550,7 @@ function App() {
       setVocabProgressFilter('all')
       setVocabProgressData(null)
       try {
-        await loadVocabProgress(true)
+        await loadVocabProgress()
       } catch (error) {
         setErrorMessage(error.message || 'Không tải được bảng theo dõi từ vựng.')
       }
