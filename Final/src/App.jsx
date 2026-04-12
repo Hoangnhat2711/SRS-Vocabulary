@@ -7,6 +7,7 @@ import {
   resetProgress as resetProgressLocal,
   selectVocabSet as selectVocabSetLocal,
   submitAnswer as submitAnswerLocal,
+  toggleWordExcluded as toggleWordExcludedLocal,
   updateModeBalance as updateModeBalanceLocal,
 } from './lib/srsStore'
 import './App.css'
@@ -50,6 +51,8 @@ async function apiFetch(path, options = {}) {
         return await resetProgressLocal()
       case 'POST /api/answer':
         return await submitAnswerLocal(payload)
+      case 'POST /api/vocab-progress/toggle-excluded':
+        return await toggleWordExcludedLocal(payload)
       default:
         throw new Error(`Route nội bộ chưa được hỗ trợ: ${method} ${path}`)
     }
@@ -196,7 +199,7 @@ function ResultBox({ result, onNext }) {
   )
 }
 
-function ProgressDrawer({ open, data, filter, onFilterChange, drawerRef }) {
+function ProgressDrawer({ open, data, filter, onFilterChange, onToggleExcluded, busyExcludedWid, drawerRef }) {
   if (!open) return <section ref={drawerRef} className="workspace drawer" id="vocabProgressDrawer" />
 
   if (!data) {
@@ -216,6 +219,7 @@ function ProgressDrawer({ open, data, filter, onFilterChange, drawerRef }) {
   const allItems = data.items || []
   const filteredItems = allItems.filter((item) => {
     if (filter === 'all') return true
+    if (filter === 'excluded') return item.excluded
     if (filter === 'pending') return !item.opened
     if (filter === 'b1') return item.opened && item.level === 1
     if (filter === 'b2') return item.opened && item.level === 2
@@ -242,6 +246,7 @@ function ProgressDrawer({ open, data, filter, onFilterChange, drawerRef }) {
             ['b4', `B4 ${summary.b4 ?? 0}`],
             ['b5', `B5 ${summary.b5 ?? 0}`],
             ['pending', `Chưa mở ${summary.pending ?? 0}`],
+            ['excluded', `Loại bỏ ${summary.excluded ?? 0}`],
           ].map(([value, label]) => (
             <button
               type="button"
@@ -267,6 +272,7 @@ function ProgressDrawer({ open, data, filter, onFilterChange, drawerRef }) {
               <th>Lượt gần nhất</th>
               <th>Chế độ gần nhất</th>
               <th>Ghi chú</th>
+              <th>Loại bỏ</th>
             </tr>
           </thead>
           <tbody>
@@ -285,11 +291,21 @@ function ProgressDrawer({ open, data, filter, onFilterChange, drawerRef }) {
                   <td>{item.last_seen_turn ?? '—'}</td>
                   <td>{item.last_mode_label || '—'}</td>
                   <td>{item.notes || ''}</td>
+                  <td className="exclude-cell">
+                    <button
+                      type="button"
+                      className={`exclude-toggle ${item.excluded ? 'active' : ''}`}
+                      aria-label={item.excluded ? `Bỏ loại trừ từ ${item.word}` : `Loại trừ từ ${item.word}`}
+                      title={item.excluded ? 'Đang loại bỏ khỏi chương trình học' : 'Nhấn để loại bỏ khỏi chương trình học'}
+                      disabled={busyExcludedWid === item.wid}
+                      onClick={() => onToggleExcluded(item.wid, !item.excluded)}
+                    />
+                  </td>
                 </tr>
               )
             }) : (
               <tr>
-                <td colSpan="8">Không có từ nào khớp bộ lọc hiện tại.</td>
+                <td colSpan="9">Không có từ nào khớp bộ lọc hiện tại.</td>
               </tr>
             )}
           </tbody>
@@ -327,6 +343,7 @@ function App() {
   const [vocabProgressFilter, setVocabProgressFilter] = useState('all')
   const [overviewCollapsed, setOverviewCollapsed] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [busyExcludedWid, setBusyExcludedWid] = useState('')
   const [doneMessage, setDoneMessage] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
 
@@ -557,6 +574,34 @@ function App() {
     }
   }
 
+  async function toggleExcludedWord(wid, excluded) {
+    if (!wid) return
+
+    setBusyExcludedWid(wid)
+    setErrorMessage('')
+
+    try {
+      const data = await apiFetch('/api/vocab-progress/toggle-excluded', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ wid, excluded }),
+      })
+
+      applySession(data.session)
+      setVocabProgressData(data.vocab_progress)
+
+      if (excluded && currentCard?.wid === wid) {
+        setResult(null)
+        setAnswerValue('')
+        await loadCard()
+      }
+    } catch (error) {
+      setErrorMessage(error.message || 'Không cập nhật được trạng thái loại bỏ của từ.')
+    } finally {
+      setBusyExcludedWid('')
+    }
+  }
+
   return (
     <div className="app-shell">
       <header className="topbar">
@@ -688,6 +733,8 @@ function App() {
         data={vocabProgressData}
         filter={vocabProgressFilter}
         onFilterChange={setVocabProgressFilter}
+        onToggleExcluded={toggleExcludedWord}
+        busyExcludedWid={busyExcludedWid}
         drawerRef={drawerRef}
       />
 

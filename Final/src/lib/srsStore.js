@@ -160,7 +160,7 @@ function randomToken() {
 
 function ensurePendingCard(context) {
     const current = context.root.pending_cards?.[context.stateKey]
-    if (current && context.vocabMap[current.wid]) {
+    if (current && context.vocabMap[current.wid] && !context.state.words[current.wid]?.excluded) {
         return current
     }
 
@@ -222,6 +222,32 @@ export async function getVocabSets() {
 export async function getVocabProgress() {
     const context = loadContext()
     return vocabProgressPayload(context.state, context.vocab, context.stateKey)
+}
+
+export async function toggleWordExcluded(payload) {
+    const context = loadContext()
+    const wid = String(payload?.wid ?? '').trim()
+
+    if (!wid || !context.state.words[wid]) {
+        throw new Error('Không tìm thấy từ cần cập nhật.')
+    }
+
+    const excluded = Boolean(payload?.excluded)
+    context.state.words[wid].excluded = excluded
+
+    const currentPendingCard = context.root.pending_cards?.[context.stateKey]
+    const shouldClearPendingCard = excluded && currentPendingCard?.wid === wid
+
+    persistContext(context, shouldClearPendingCard ? null : undefined)
+
+    return {
+        message: excluded ? 'Đã loại bỏ từ khỏi chương trình học.' : 'Đã đưa từ quay lại chương trình học.',
+        wid,
+        excluded,
+        session: sessionPayload(context.state, context.vocab, context.stateKey),
+        vocab_progress: vocabProgressPayload(context.state, context.vocab, context.stateKey),
+        current_card_cleared: shouldClearPendingCard,
+    }
 }
 
 export async function getModeBalance() {

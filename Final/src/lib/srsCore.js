@@ -107,6 +107,7 @@ export function buildInitialState(signature, vocab) {
             vocab.map((entry) => [entry.wid, {
                 status: 'pending',
                 level: null,
+                excluded: false,
                 times_seen: 0,
                 last_seen_turn: null,
                 last_mode: null,
@@ -128,6 +129,10 @@ export function ensureStateDefaults(state) {
     nextState.review_level_history ??= []
     nextState.review_mode_history ??= []
     nextState.settings ??= {}
+    nextState.words ??= {}
+    Object.values(nextState.words).forEach((meta) => {
+        meta.excluded ??= false
+    })
     nextState.settings.vi_to_en_ratio = normalizeViToEnRatio(nextState.settings.vi_to_en_ratio)
     nextState.version = STATE_VERSION
     return nextState
@@ -136,8 +141,14 @@ export function ensureStateDefaults(state) {
 export function levelCounts(state) {
     const counts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
     let pending = 0
+    let excluded = 0
 
     Object.values(state.words).forEach((meta) => {
+        if (meta.excluded) {
+            excluded += 1
+            return
+        }
+
         if (meta.status === 'pending') {
             pending += 1
         } else if ([1, 2, 3, 4, 5].includes(Number(meta.level))) {
@@ -145,7 +156,7 @@ export function levelCounts(state) {
         }
     })
 
-    return { counts, pending }
+    return { counts, pending, excluded }
 }
 
 export function progressLine(state, previewNewWord = false) {
@@ -161,7 +172,7 @@ export function progressLine(state, previewNewWord = false) {
 }
 
 export function progressPayload(state, previewNewWord = false) {
-    const { counts, pending: originalPending } = levelCounts(state)
+    const { counts, pending: originalPending, excluded } = levelCounts(state)
     let pending = originalPending
 
     if (previewNewWord && pending > 0) {
@@ -176,6 +187,7 @@ export function progressPayload(state, previewNewWord = false) {
         b4: counts[4],
         b5: counts[5],
         pending,
+        excluded,
         line: progressLine(state, previewNewWord),
     }
 }
@@ -266,7 +278,7 @@ export function chooseReviewMode(state, random = Math.random) {
 
 export function pickPendingWord(state, random = Math.random) {
     const pendingIds = Object.entries(state.words)
-        .filter(([, meta]) => meta.status === 'pending')
+        .filter(([, meta]) => meta.status === 'pending' && !meta.excluded)
         .map(([wid]) => wid)
 
     if (!pendingIds.length) return null
@@ -314,7 +326,7 @@ export function weightedPickWord(state, pool, random = Math.random) {
 
 export function chooseWordForLevel(state, level, random = Math.random) {
     const candidates = Object.entries(state.words)
-        .filter(([, meta]) => meta.status === 'active' && Number(meta.level) === level)
+        .filter(([, meta]) => meta.status === 'active' && Number(meta.level) === level && !meta.excluded)
         .map(([wid]) => wid)
 
     if (!candidates.length) return null
@@ -412,6 +424,7 @@ export function wordProgressPayload(index, entry, state) {
         pos: entry.pos,
         phonetic: entry.phonetic,
         notes: entry.notes,
+        excluded: Boolean(meta.excluded),
         status: meta.status,
         status_label: isPending ? 'Chưa mở' : 'Đã mở',
         opened: !isPending,
@@ -450,6 +463,7 @@ export function cardPayload(card, state, vocabMap) {
 
     const payload = {
         token: card.token,
+        wid: card.wid,
         kind: card.kind,
         mode: card.mode,
         mode_label: MODE_LABELS[card.mode],
