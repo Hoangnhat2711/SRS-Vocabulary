@@ -11,11 +11,46 @@ function moduleName(path) {
     return path.split('/').pop()
 }
 
+function payloadTitle(payload, fallback = 'Vocabulary Collection') {
+    const title = String(payload?.title ?? '').trim()
+    return title || fallback
+}
+
 const VOCAB_SOURCES = Object.entries(vocabModules).map(([path, value]) => ({
     path,
     name: moduleName(path),
     payload: modulePayload(value),
 }))
+
+function logicalSetEntries() {
+    const entries = []
+
+    VOCAB_SOURCES.forEach((source) => {
+        const collectionTitle = payloadTitle(source.payload, source.name.replace(/\.json$/i, ''))
+        const combinedNames = listCombinedVocabNames(source.payload)
+
+        if (combinedNames.length) {
+            combinedNames.forEach((testName) => {
+                entries.push({
+                    value: `${collectionTitle} · ${testName}`,
+                    testName,
+                    sourceName: source.name,
+                    collectionTitle,
+                })
+            })
+            return
+        }
+
+        entries.push({
+            value: collectionTitle,
+            testName: collectionTitle,
+            sourceName: source.name,
+            collectionTitle,
+        })
+    })
+
+    return entries
+}
 
 function defaultRootState() {
     return {
@@ -55,58 +90,44 @@ function writeRootState(rootState) {
 }
 
 function listSourceNames() {
-    const names = []
-
-    VOCAB_SOURCES.forEach((source) => {
-        const combinedNames = listCombinedVocabNames(source.payload)
-        if (combinedNames.length) {
-            names.push(...combinedNames)
-        } else {
-            names.push(source.name)
-        }
-    })
-
-    return names
+    return logicalSetEntries().map((entry) => entry.value)
 }
 
 function resolveSelection(requestedName = null) {
-    const available = listSourceNames()
-    const preferredName = requestedName && available.includes(requestedName)
-        ? requestedName
-        : available[0] ?? null
+    const entries = logicalSetEntries()
+    const available = entries.map((entry) => entry.value)
+    let chosen = null
 
-    if (!preferredName) {
+    if (requestedName) {
+        chosen = entries.find((entry) => entry.value === requestedName)
+            || entries.find((entry) => entry.testName === requestedName)
+            || entries.find((entry) => entry.sourceName === requestedName)
+    }
+
+    if (!chosen) {
+        chosen = entries[0] ?? null
+    }
+
+    if (!chosen) {
         throw new Error('Không tìm thấy file JSON nào trong thư mục vocab_sets.')
     }
 
-    for (const source of VOCAB_SOURCES) {
-        const combinedNames = listCombinedVocabNames(source.payload)
-        if (combinedNames.includes(preferredName)) {
-            const vocab = createEntriesFromPayload(source.payload, preferredName)
-            return {
-                sourceName: source.name,
-                selectedName: preferredName,
-                payload: source.payload,
-                vocab,
-                vocabMap: Object.fromEntries(vocab.map((entry) => [entry.wid, entry])),
-                vocabSets: available,
-            }
-        }
-
-        if (source.name === preferredName) {
-            const vocab = createEntriesFromPayload(source.payload, source.name)
-            return {
-                sourceName: source.name,
-                selectedName: source.name,
-                payload: source.payload,
-                vocab,
-                vocabMap: Object.fromEntries(vocab.map((entry) => [entry.wid, entry])),
-                vocabSets: available,
-            }
-        }
+    const source = VOCAB_SOURCES.find((item) => item.name === chosen.sourceName)
+    if (!source) {
+        throw new Error(`Không tìm thấy bộ từ vựng: ${chosen.value}`)
     }
 
-    throw new Error(`Không tìm thấy bộ từ vựng: ${preferredName}`)
+    const vocab = createEntriesFromPayload(source.payload, chosen.testName)
+    return {
+        sourceName: source.name,
+        selectedName: chosen.value,
+        testName: chosen.testName,
+        collectionTitle: chosen.collectionTitle,
+        payload: source.payload,
+        vocab,
+        vocabMap: Object.fromEntries(vocab.map((entry) => [entry.wid, entry])),
+        vocabSets: available,
+    }
 }
 
 function loadContext(requestedSelection = null) {
@@ -201,6 +222,7 @@ function ensurePendingCard(context) {
 
 function vocabSetsPayload(context) {
     return {
+        title: context.collectionTitle,
         selected: context.stateKey,
         sets: context.vocabSets,
     }
@@ -219,6 +241,8 @@ function catalogItemPayload(snapshot, selectedName) {
 
     return {
         name: snapshot.stateKey,
+        test_name: snapshot.testName,
+        collection_title: snapshot.collectionTitle,
         source_name: snapshot.sourceName,
         total_words: snapshot.vocab.length,
         started_words: startedWords,
@@ -267,10 +291,15 @@ export async function getVocabCatalog() {
     const root = ensureRootStateShape(readRootState())
     const names = listSourceNames()
     const selectedName = names.includes(root.selected_vocab) ? root.selected_vocab : (names[0] ?? null)
+    const snapshots = names.map((name) => previewContextForSelection(root, name))
+    const selectedSnapshot = snapshots.find((item) => item.stateKey === selectedName) || snapshots[0] || null
+    const collectionTitles = [...new Set(snapshots.map((snapshot) => snapshot.collectionTitle))]
 
     return {
+        title: collectionTitles.length === 1 ? collectionTitles[0] : 'Thư viện bộ từ vựng',
+        active_title: selectedSnapshot?.collectionTitle || 'Vocabulary Collection',
         selected: selectedName,
-        items: names.map((name) => catalogItemPayload(previewContextForSelection(root, name), selectedName)),
+        items: snapshots.map((snapshot) => catalogItemPayload(snapshot, selectedName)),
     }
 }
 

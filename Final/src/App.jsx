@@ -330,12 +330,33 @@ function EmptyState({ message }) {
   )
 }
 
-function CatalogScreen({ catalogData, onStartStudy, busyName }) {
+function CatalogScreen({ catalogData, onStartStudy, busyName, collectionTitle }) {
+  const items = catalogData?.items || []
+  const collectionGroups = Object.values(items.reduce((groups, item) => {
+    const title = item.collection_title || collectionTitle
+    if (!groups[title]) {
+      groups[title] = {
+        title,
+        items: [],
+      }
+    }
+    groups[title].items.push(item)
+    return groups
+  }, {}))
+  const collectionTitles = collectionGroups.map((group) => group.title)
+  const [collectionFilter, setCollectionFilter] = useState('all')
+
+  useEffect(() => {
+    if (collectionFilter !== 'all' && !collectionTitles.includes(collectionFilter)) {
+      setCollectionFilter('all')
+    }
+  }, [collectionFilter, collectionTitles])
+
   if (!catalogData) {
     return (
       <section className="catalog-screen loading-state">
         <div className="catalog-hero-card">
-          <div className="catalog-badge">SRS Vocabulary</div>
+          <div className="catalog-badge">{collectionTitle}</div>
           <h2>Đang tải thư viện bộ từ vựng...</h2>
           <p>Hệ thống đang chuẩn bị danh sách bộ từ, tiến độ và các thông tin để bạn chọn chương trình học phù hợp.</p>
         </div>
@@ -343,60 +364,136 @@ function CatalogScreen({ catalogData, onStartStudy, busyName }) {
     )
   }
 
-  const items = catalogData.items || []
-  const featured = items.find((item) => item.is_current) || items[0] || null
+  const visibleGroups = collectionFilter === 'all'
+    ? collectionGroups
+    : collectionGroups.filter((group) => group.title === collectionFilter)
 
   return (
     <section className="catalog-screen">
       <div className="catalog-hero-card">
         <div className="catalog-badge">Thư viện bộ từ vựng</div>
-        <h2>Chọn chương trình học trước khi bắt đầu</h2>
+        <h2>Chọn bộ từ vựng</h2>
 
         <div className="catalog-hero-actions">
-          <div className="catalog-hero-note">Bạn có thể chọn bất kỳ bộ nào bên dưới để vào màn hình học.</div>
+          <div className="catalog-hero-note">Mỗi bộ gồm nhiều test. Chọn test phù hợp để bắt đầu hoặc tiếp tục học.</div>
         </div>
       </div>
 
-      <div className="catalog-grid">
-        {items.map((item) => (
-          <article key={item.name} className={`catalog-card ${item.is_current ? 'current' : ''}`}>
-            <div className="catalog-card-top">
-              <div className="catalog-card-heading">
-                <div className="catalog-card-title">{item.name}</div>
-                <div className="catalog-card-sub">{item.total_words} từ · {item.excluded_words} từ đã loại bỏ</div>
-                {item.is_current ? <span className="catalog-current-pill">Đang chọn</span> : null}
+      {collectionTitles.length > 1 ? (
+        <div className="catalog-filter-bar">
+          <button
+            type="button"
+            className={`catalog-filter-chip ${collectionFilter === 'all' ? 'active' : ''}`}
+            onClick={() => setCollectionFilter('all')}
+          >
+            Tất cả bộ
+          </button>
+
+          {collectionTitles.map((title) => (
+            <button
+              type="button"
+              key={title}
+              className={`catalog-filter-chip ${collectionFilter === title ? 'active' : ''}`}
+              onClick={() => setCollectionFilter(title)}
+            >
+              {title}
+            </button>
+          ))}
+        </div>
+      ) : null}
+
+      {visibleGroups.map((group) => {
+        const totalWords = group.items.reduce((sum, item) => sum + item.total_words, 0)
+        const totalExcluded = group.items.reduce((sum, item) => sum + item.excluded_words, 0)
+
+        return (
+          <section key={group.title} className="collection-section">
+            <div className="collection-head">
+              <div>
+                <div className="collection-title">{group.title}</div>
+                <div className="collection-sub">{group.items.length} test · {totalWords} từ · {totalExcluded} từ loại bỏ</div>
               </div>
-
-              <div className="catalog-card-top-actions">
-                <button
-                  className="btn btn-primary"
-                  disabled={busyName === item.name}
-                  onClick={() => onStartStudy(item.name)}
-                >
-                  {item.is_current ? 'Tiếp tục học' : 'Chọn bộ này'}
-                </button>
-              </div>
             </div>
 
-            <div className="catalog-chip-row">
-              <span className="catalog-chip">Đã mở {item.started_words}</span>
-            </div>
+            <div className="catalog-grid grouped">
+              {group.items.map((item) => (
+                <article key={item.name} className={`catalog-card ${item.is_current ? 'current' : ''}`}>
+                  <div className="catalog-card-top">
+                    <div className="catalog-card-heading">
+                      <div className="catalog-card-title-row">
+                        <div className="catalog-card-title">{item.test_name || item.name}</div>
+                        {item.is_current ? <span className="catalog-current-pill">Đang chọn</span> : null}
+                      </div>
+                      <div className="catalog-card-sub">{item.total_words} từ · {item.excluded_words} từ loại bỏ</div>
+                    </div>
 
-            <div className="catalog-level-row">
-              <span className="catalog-level-pill level-b1">B1 {item.summary.b1}</span>
-              <span className="catalog-level-pill level-b2">B2 {item.summary.b2}</span>
-              <span className="catalog-level-pill level-b3">B3 {item.summary.b3}</span>
-              <span className="catalog-level-pill level-b4">B4 {item.summary.b4}</span>
-              <span className="catalog-level-pill level-b5">B5 {item.summary.b5}</span>
-              <span className="catalog-level-pill level-pending">Chưa mở {item.summary.pending}</span>
-            </div>
+                    <div className="catalog-card-top-actions">
+                      <button
+                        className={`btn ${item.started_words > 0 ? 'btn-continue-study' : 'btn-select-set'}`}
+                        disabled={busyName === item.name}
+                        onClick={() => onStartStudy(item.name)}
+                      >
+                        {item.started_words > 0 ? 'Tiếp tục học' : 'Học'}
+                      </button>
+                    </div>
+                  </div>
 
-            <div className="catalog-progress-bar">
-              <div className="catalog-progress-fill" style={{ width: `${item.completion_percent}%` }} />
+                  <div className="catalog-card-meta compact">
+                    <div className="catalog-meta-item">
+                      <span>Tổng từ</span>
+                      <strong>{item.total_words}</strong>
+                    </div>
+                    <div className="catalog-meta-item">
+                      <span>Đã mở</span>
+                      <strong>{item.started_words}</strong>
+                    </div>
+                    <div className="catalog-meta-item">
+                      <span>Loại bỏ</span>
+                      <strong>{item.excluded_words}</strong>
+                    </div>
+                  </div>
+
+                  <div className="catalog-level-grid">
+                    <div className="catalog-level-card level-b1">
+                      <span>B1</span>
+                      <strong>{item.summary.b1}</strong>
+                    </div>
+                    <div className="catalog-level-card level-b2">
+                      <span>B2</span>
+                      <strong>{item.summary.b2}</strong>
+                    </div>
+                    <div className="catalog-level-card level-b3">
+                      <span>B3</span>
+                      <strong>{item.summary.b3}</strong>
+                    </div>
+                    <div className="catalog-level-card level-b4">
+                      <span>B4</span>
+                      <strong>{item.summary.b4}</strong>
+                    </div>
+                    <div className="catalog-level-card level-b5">
+                      <span>B5</span>
+                      <strong>{item.summary.b5}</strong>
+                    </div>
+                    <div className="catalog-level-card level-pending">
+                      <span>Chưa mở</span>
+                      <strong>{item.summary.pending}</strong>
+                    </div>
+                  </div>
+
+                  <div className="catalog-progress-head">
+                    <span>Tiến độ nhớ vững</span>
+                    <strong>{item.completion_percent}%</strong>
+                  </div>
+
+                  <div className="catalog-progress-bar">
+                    <div className="catalog-progress-fill" style={{ width: `${item.completion_percent}%` }} />
+                  </div>
+                </article>
+              ))}
             </div>
-          </article>
-        ))}
-      </div>
+          </section>
+        )
+      })}
     </section>
   )
 }
@@ -423,6 +520,11 @@ function App() {
   const [busyExcludedWid, setBusyExcludedWid] = useState('')
   const [doneMessage, setDoneMessage] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
+
+  const collectionTitle = useMemo(() => {
+    if (screen === 'study') return catalogData?.active_title || catalogData?.title || 'Vocabulary Collection'
+    return catalogData?.title || 'Vocabulary Collection'
+  }, [catalogData, screen])
 
   const applySession = useCallback((nextSession) => {
     setSession(nextSession || null)
@@ -740,7 +842,7 @@ function App() {
           </div>
           <div className="brand">
             <h1>SRS Vocabulary</h1>
-            <p>Không gian học từ vựng lặp lại ngắt quãng, tối ưu cho ôn tập hằng ngày và theo dõi tiến độ rõ ràng.</p>
+            <p>{collectionTitle} · Không gian học từ vựng lặp lại ngắt quãng, tối ưu cho ôn tập hằng ngày và theo dõi tiến độ rõ ràng.</p>
           </div>
         </div>
 
@@ -769,6 +871,7 @@ function App() {
           catalogData={catalogData}
           onStartStudy={startStudyFromCatalog}
           busyName={busyCatalogName}
+          collectionTitle={collectionTitle}
         />
       ) : null}
 
